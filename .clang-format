@@ -1,0 +1,42 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+AlignEscapedNewlines: Left
+AlwaysBreakTemplateDeclarations: true
+BinPackArguments: false
+BinPackParameters: false
+BraceWrapping: 
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterObjCDeclaration: false
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+BreakBeforeBinaryOperators: All
+BreakBeforeBraces: Custom
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+IncludeCategories: 
+  - Regex: '^["<]supernovas/'
+    Priority: 1
+  - Regex: '^<.*/'
+    Priority: 2
+  - Regex: '^<[a-z_]+'
+    Priority: 3
+IndentCaseLabels: true
+KeepEmptyLinesAtTheStartOfBlocks: false
+NamespaceIndentation: All
+PenaltyReturnTypeOnItsOwnLine: 1000000
+PointerAlignment: Left
+SpacesBeforeTrailingComments: 2
+TabWidth: 2
+...
