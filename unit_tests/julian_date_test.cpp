@@ -1,5 +1,6 @@
 #include "supernovas/julian_date.h"
 #include <catch2/catch.hpp>
+#include <iostream>
 
 using namespace std::literals::chrono_literals;
 
@@ -19,8 +20,9 @@ TEMPLATE_TEST_CASE(  // NOLINT
 
   SECTION("constructing from a clock time point")
   {
-    const jdt jd{std::chrono::system_clock::now()};
-    CHECK(jd.date() == Approx{0.0});
+    const jdt jd{std::chrono::system_clock::time_point{1615273885865337375s}};
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+    CHECK(jd.date() == Approx{2459282.79959});
   }
 
   SECTION("constructing from a floating point value")

@@ -10,6 +10,8 @@ target_link_libraries(
     Catch2::Catch2
     supernovas::supernovas
 )
+target_compile_options(supernovas_unit_tests PRIVATE ${CMAKE_TOOLS_COMPILE_OPTIONS})
+    
 include(Catch)
 catch_discover_tests(supernovas_unit_tests)
 

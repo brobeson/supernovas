@@ -26,7 +26,9 @@ namespace supernovas
      */
     template <typename Clock>
     constexpr explicit basic_julian_date(
-      std::chrono::time_point<Clock> time) noexcept {};
+      std::chrono::time_point<Clock> /*time*/) noexcept
+      : m_date{0.0}
+    {}
 
     /**
      * \brief Construct a Julian date from a raw value.
@@ -36,33 +38,8 @@ namespace supernovas
       : m_date{date}
     {}
 
-    /// Copy a Julian date of the same precision.
-    constexpr basic_julian_date(const basic_julian_date<value_type>&) = default;
-
-    /// Move a Julian date of the same precision.
-    constexpr basic_julian_date(basic_julian_date<value_type>&&) noexcept
-      = default;
-
-    /// Copy-assign a Julian date of the same precision.
-    constexpr basic_julian_date<value_type>& operator=(
-      const basic_julian_date<value_type>&)
-      = default;
-
-    /// Move-assign a Julian date of the same precision.
-    constexpr basic_julian_date<value_type>& operator=(
-      basic_julian_date<value_type>&&) noexcept
-      = default;
-
-    /// Destroy a Julian date.
-    ~basic_julian_date() = default;
-
-    /**
-     * \brief Get the Julian date value.
-     * \return The value of the Julian date.
-     */
-    [[nodiscard]] constexpr value_type date() const noexcept { return m_date; }
-
-    // [[nodiscard]] friend auto operator<=>(const);
+    /// The Julian date as a raw floating point value.
+    [[nodiscard]] constexpr auto date() const noexcept { return m_date; }
 
   private:
     value_type m_date;
@@ -71,7 +48,10 @@ namespace supernovas
   namespace detail
   {
     constexpr long double nanoseconds_per_day{8.64e13};
-  }
+
+    // This is the Julian date of 00:00:00 on 1970 January 1.
+    constexpr long double unix_epoch_julian_date{2440587.5};
+  }  // namespace detail
 
   /**
    * \brief Advance a Julian date by some time duration.
