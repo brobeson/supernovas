@@ -1,4 +1,5 @@
 find_package(Catch2 REQUIRED)
+mark_as_advanced(Catch2_DIR)
 add_executable(
   supernovas_unit_tests
   main.cpp

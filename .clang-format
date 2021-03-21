@@ -25,6 +25,7 @@ BreakBeforeBraces: Custom
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: 2
 ContinuationIndentWidth: 2
+FixNamespaceComments: true
 IncludeCategories: 
   - Regex: '^["<]supernovas/'
     Priority: 1

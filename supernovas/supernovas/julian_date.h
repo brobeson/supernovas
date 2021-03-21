@@ -64,7 +64,7 @@ namespace supernovas
    * \related basic_julian_date
    */
   template <typename ValueType, typename Rep, typename Period>
-  constexpr basic_julian_date<ValueType> operator+(
+  constexpr auto operator+(
     const basic_julian_date<ValueType> date,
     const std::chrono::duration<Rep, Period> duration) noexcept
   {
@@ -87,9 +87,8 @@ namespace supernovas
    * \related basic_julian_date
    */
   template <typename ValueType, typename Rep, typename Period>
-  constexpr basic_julian_date<ValueType> operator+(
-    const std::chrono::duration<Rep, Period> duration,
-    const basic_julian_date<ValueType> date)
+  constexpr auto operator+(const std::chrono::duration<Rep, Period> duration,
+                           const basic_julian_date<ValueType> date) noexcept
   {
     return date + duration;
   }
@@ -105,9 +104,9 @@ namespace supernovas
    * \related basic_julian_date
    */
   template <typename ValueType, typename Rep, typename Period>
-  constexpr basic_julian_date<ValueType> operator-(
+  constexpr auto operator-(
     const basic_julian_date<ValueType> date,
-    const std::chrono::duration<Rep, Period> duration)
+    const std::chrono::duration<Rep, Period> duration) noexcept
   {
     // TODO Change static_cast to gsl::narrow.
     return basic_julian_date<ValueType>{
