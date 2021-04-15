@@ -6,18 +6,17 @@
 
 namespace supernovas
 {
-  template <typename ValueType>
-  class basic_julian_date final
+  class julian_date final
   {
-    static_assert(std::is_floating_point_v<ValueType>,
-                  "A julian date must use a floating point type.");
-
   public:
-    /// The data type of stored Julian date.
-    using value_type = ValueType;
+    /// The data type of the whole Julian day.
+    using day_type = int;
 
-    /// \brief Construct Julian date 0.0.
-    constexpr basic_julian_date() = default;
+    /// The data type of the fractional Julian day.
+    using time_type = std::chrono::nanoseconds;
+
+    /// \brief Construct the Julian date 0.0.
+    constexpr julian_date() = default;
 
     /**
      * \brief Construct a Julian date from a clock time point.
@@ -25,100 +24,104 @@ namespace supernovas
      * \param[in] time The time point to convert to a Julian date.
      */
     template <typename Clock>
-    constexpr explicit basic_julian_date(
+    constexpr explicit julian_date(
       std::chrono::time_point<Clock> /*time*/) noexcept
-      : m_date{0.0}
     {}
 
     /**
      * \brief Construct a Julian date from a raw value.
+     * \tparam Rep See https://en.cppreference.com/w/cpp/chrono/duration.
+     * \tparam Period See https://en.cppreference.com/w/cpp/chrono/duration.
      * \param[in] date The raw value to use as the Julian date.
      */
-    constexpr explicit basic_julian_date(value_type date) noexcept
-      : m_date{date}
+    template <typename Rep, typename Period>
+    constexpr julian_date(day_type /*day*/,
+                          std::chrono::duration<Rep, Period> /*time*/) noexcept
+    {}
+
+    /**
+     * \brief Construct a Julian date from a floating point value.
+     * \tparam Float The floating point type. This must be a floating point
+     *    type, or an integer type. Note that boolean and character types are
+     *    not allowed. If Float is an integer type, the time of day is
+     *    initialized to 0.
+     * \param[in] jd The Julian date number to convert to a julian_date object.
+     */
+    template <typename Float>
+    constexpr explicit julian_date(Float /*jd*/) noexcept
     {}
 
     /// The Julian date as a raw floating point value.
-    [[nodiscard]] constexpr auto date() const noexcept { return m_date; }
+    [[nodiscard]] constexpr auto day() const noexcept { return m_day; }
+
+    /// The time of day within the Julian date.
+    [[nodiscard]] constexpr auto time_of_day() const noexcept
+    {
+      return m_time_of_day;
+    }
 
   private:
-    value_type m_date;
+    day_type m_day{0};
+    time_type m_time_of_day{0};
   };
 
-  namespace detail
-  {
-    constexpr long double nanoseconds_per_day{8.64e13};
+  // namespace detail
+  // {
+  //   constexpr long double nanoseconds_per_day{8.64e13};
 
-    // This is the Julian date of 00:00:00 on 1970 January 1.
-    constexpr long double unix_epoch_julian_date{2440587.5};
-  }  // namespace detail
+  //   // This is the Julian date of 00:00:00 on 1970 January 1.
+  //   constexpr long double unix_epoch_julian_date{2440587.5};
+  // }  // namespace detail
 
   /**
    * \brief Advance a Julian date by some time duration.
-   * \tparam ValueType The type of the Julian date.
    * \tparam Rep See https://en.cppreference.com/w/cpp/chrono/duration.
    * \tparam Period See https://en.cppreference.com/w/cpp/chrono/duration.
    * \param[in] date The Julian date to advance.
    * \param[in] duration The amount of time by which to advance the \a date.
    * \return The new Julian date.
-   * \related basic_julian_date
+   * \related julian_date
    */
-  template <typename ValueType, typename Rep, typename Period>
+  template <typename Rep, typename Period>
   constexpr auto operator+(
-    const basic_julian_date<ValueType> date,
-    const std::chrono::duration<Rep, Period> duration) noexcept
+    const julian_date date,
+    const std::chrono::duration<Rep, Period> /*duration*/) noexcept
   {
-    // TODO Change static_cast to gsl::narrow.
-    return basic_julian_date<ValueType>{
-      date.date()
-      + static_cast<ValueType>(
-        std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count()
-        / detail::nanoseconds_per_day)};
+    return date;
   }
 
   /**
    * \brief Advance a Julian date by some time duration.
-   * \tparam ValueType The type of the Julian date.
    * \tparam Rep See https://en.cppreference.com/w/cpp/chrono/duration.
    * \tparam Period See https://en.cppreference.com/w/cpp/chrono/duration.
    * \param[in] duration The amount of time by which to advance the \a date.
    * \param[in] date The Julian date to advance.
    * \return The new Julian date.
-   * \related basic_julian_date
+   * \related julian_date
    */
-  template <typename ValueType, typename Rep, typename Period>
+  template <typename Rep, typename Period>
   constexpr auto operator+(const std::chrono::duration<Rep, Period> duration,
-                           const basic_julian_date<ValueType> date) noexcept
+                           const julian_date date) noexcept
   {
     return date + duration;
   }
 
   /**
    * \brief Back up a Julian date by some time duration.
-   * \tparam ValueType The type of the Julian date.
    * \tparam Rep See https://en.cppreference.com/w/cpp/chrono/duration.
    * \tparam Period See https://en.cppreference.com/w/cpp/chrono/duration.
    * \param[in] date The Julian date to back up.
    * \param[in] duration The amount of time by which to back up the \a date.
    * \return The new Julian date.
-   * \related basic_julian_date
+   * \related julian_date
    */
-  template <typename ValueType, typename Rep, typename Period>
+  template <typename Rep, typename Period>
   constexpr auto operator-(
-    const basic_julian_date<ValueType> date,
-    const std::chrono::duration<Rep, Period> duration) noexcept
+    const julian_date date,
+    const std::chrono::duration<Rep, Period> /*duration*/) noexcept
   {
-    // TODO Change static_cast to gsl::narrow.
-    return basic_julian_date<ValueType>{
-      date.date()
-      - static_cast<ValueType>(
-        std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count()
-        / detail::nanoseconds_per_day)};
+    return date;
   }
-
-  using julian_date_f = basic_julian_date<float>;
-  using julian_date_d = basic_julian_date<double>;
-  using julian_date_ld = basic_julian_date<long double>;
 }  // namespace supernovas
 
 #endif
