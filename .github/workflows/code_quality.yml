@@ -1,0 +1,24 @@
+# Copyright 2023 brobeson
+
+name: Code Quality
+on:
+  pull_request:
+  push:
+env:
+  SOURCE: source
+  BUILD: build
+
+# From https://stackoverflow.com/a/72408109
+# Create a group from the PR number, or the branch/tag name (if not a PR).
+# Cancel in-progress runs if the PR, branch, or tag is updated.
+concurrency:
+  group: ${{github.workflow}}-${{github.event.pull_request.number || github.ref}}
+  cancel-in-progress: true
+
+jobs:
+  CodeQuality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: ${{env.SOURCE}}
