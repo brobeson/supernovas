@@ -2,6 +2,7 @@
 Checks: >
   *,
   -android*,
+  -cert-dcl21-cpp,
   -clang-diagnostic-unused-macros,
   -fuchsia*,
   -google-readability-todo,

@@ -60,10 +60,43 @@ namespace supernovas
       return m_time_of_day;
     }
 
+    julian_date& operator++()
+    {
+      ++m_day;
+      return *this;
+    }
+    julian_date operator++(int)
+    {
+      const auto original{*this};
+      operator++();
+      return original;
+    }
+    julian_date& operator--()
+    {
+      --m_day;
+      return *this;
+    }
+    julian_date operator--(int)
+    {
+      const auto original{*this};
+      operator--();
+      return original;
+    }
+
   private:
     day_type m_day{0};
     time_type m_time_of_day{0};
   };
+
+  [[nodiscard]] inline bool operator==(const julian_date /*a*/,
+                                       const julian_date /*b*/)
+  {
+    return true;
+  }
+  [[nodiscard]] inline bool operator!=(const julian_date a, const julian_date b)
+  {
+    return !(a == b);
+  }
 
   // namespace detail
   // {
