@@ -27,6 +27,10 @@ FetchContent_Declare(
   GIT_TAG v3.0.1
 )
 FetchContent_MakeAvailable(date_project)
+
+# BUG This is a work around for https://github.com/brobeson/supernovas/issues/1.
+list(REMOVE_ITEM CMAKE_TOOLS_COMPILE_OPTIONS -Wnoexcept)
+
 set(CMAKE_DEBUG_POSTFIX "-d")
 add_subdirectory(supernovas)
 
