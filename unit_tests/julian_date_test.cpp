@@ -1,6 +1,5 @@
 #include "supernovas/julian_date.h"
 #include <catch2/catch.hpp>
-#include <iostream>
 
 using namespace std::literals::chrono_literals;
 
@@ -34,6 +33,84 @@ SCENARIO("A user can construct a Julian date.")
     {
       // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
       CHECK(jd.time_of_day() == 2.0218e13ns);
+    }
+  }
+}
+
+SCENARIO("A user can compare Julian dates.")
+{
+  // #lizard forgives
+  // I can't do much about the length of this scenario. Much of the excess is
+  // the data table.
+  GIVEN("Two Julian dates")
+  {
+    struct expected_results
+    {
+      bool equality;
+      bool inequality;
+      bool less_than;
+      bool less_than_equal;
+      bool greater_than;
+      bool greater_than_equal;
+    };
+    const auto [a, b, expected_result]{GENERATE(
+      table<supernovas::julian_date, supernovas::julian_date, expected_results>(
+        {{{345, 987ns},  // a == b
+          {345, 987ns},
+          {true, false, false, true, false, true}},
+         {{345, 987ns},  // a > b due to time of day
+          {345, 897ns},
+          {false, true, false, false, true, true}},
+         {{345, 987ns},  // a > b due to day
+          {334, 987ns},
+          {false, true, false, false, true, true}},
+         {{345, 897ns},  // a < b due to time of day
+          {345, 987ns},
+          {false, true, true, true, false, false}},
+         {{334, 987ns},  // a < b due to day
+          {345, 987ns},
+          {false, true, true, true, false, false}}}))};
+    WHEN("The two dates are compared for equality")
+    {
+      THEN("The result is correct.")
+      {
+        CHECK((a == b) == expected_result.equality);
+      }
+    }
+    AND_WHEN("The two dates are compared for inequality")
+    {
+      THEN("The result is correct.")
+      {
+        CHECK((a != b) == expected_result.inequality);
+      }
+    }
+    AND_WHEN("The two dates are compared with less-than")
+    {
+      THEN("The result is correct")
+      {
+        CHECK((a < b) == expected_result.less_than);
+      }
+    }
+    AND_WHEN("The dates are compared with less-than-or-equal")
+    {
+      THEN("The result is correct")
+      {
+        CHECK((a <= b) == expected_result.less_than_equal);
+      }
+    }
+    AND_WHEN("The dates are compared with greater-than")
+    {
+      THEN("The result is correct")
+      {
+        CHECK((a > b) == expected_result.greater_than);
+      }
+    }
+    AND_WHEN("The dates are compared with greater-than-or-equal")
+    {
+      THEN("The result is correct")
+      {
+        CHECK((a >= b) == expected_result.greater_than_equal);
+      }
     }
   }
 }

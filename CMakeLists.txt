@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.19)
 
-# list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-tools")
-find_package(cmake-tools REQUIRED)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-tools")
 include(CMakeToolsVersionFromGit)
 project(
   supernovas

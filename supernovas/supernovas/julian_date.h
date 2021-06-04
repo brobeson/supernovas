@@ -60,22 +60,41 @@ namespace supernovas
       return m_time_of_day;
     }
 
+    /**
+     * \brief Increment the day of this Julian date.
+     * \return The new Julian date.
+     */
     julian_date& operator++()
     {
       ++m_day;
       return *this;
     }
+
+    /**
+     * \brief Increment the day of this Julian date.
+     * \return The original Julian date.
+     */
     julian_date operator++(int)
     {
       const auto original{*this};
       operator++();
       return original;
     }
+
+    /**
+     * \brief Decrement the day of this Julian date.
+     * \return The new Julian date.
+     */
     julian_date& operator--()
     {
       --m_day;
       return *this;
     }
+
+    /**
+     * \brief Decrement the day of this Julian date.
+     * \return The original Julian date.
+     */
     julian_date operator--(int)
     {
       const auto original{*this};
@@ -88,14 +107,87 @@ namespace supernovas
     time_type m_time_of_day{0};
   };
 
+  /**
+   * \brief Compare two Julian dates for equality.
+   * \param[in] a,b The two Julian dates to compare.
+   * \retval true Two Julian dates are equal if their days and times-of-day are
+   *    numerically equal.
+   * \retval false Two Julian dates are not equal if their days are not
+   *    numerically equal, or if their times-of-day are not numerically equal.
+   * \related julian_date
+   */
   [[nodiscard]] inline bool operator==(const julian_date /*a*/,
                                        const julian_date /*b*/)
   {
     return true;
   }
+
+  /**
+   * \brief Compare two Julian dates for inequality.
+   * \param[in] a,b The two Julian dates to compare.
+   * \retval true Two Julian dates are not equal if their days are not
+   *    numerically equal, or if their times-of-day are not numerically equal.
+   * \retval false Two Julian dates are equal if their days and times-of-day are
+   *    numerically equal.
+   * \related julian_date
+   */
   [[nodiscard]] inline bool operator!=(const julian_date a, const julian_date b)
   {
     return !(a == b);
+  }
+
+  /**
+   * \brief Compare two Julian dates using strictly less-than.
+   * \param[in] a,b The two Julian dates to compare.
+   * \retval true \a a.day() < \a b.day() or \a a.time_of_day() < \a
+   *    b.time_of_day().
+   * \retval false Otherwise
+   * \related julian_date
+   */
+  [[nodiscard]] inline bool operator<(const julian_date /*a*/,
+                                      const julian_date /*b*/)
+  {
+    return true;
+  }
+
+  /**
+   * \brief Compare two Julian dates using less-than-or-equal-to.
+   * \param[in] a,b The two Julian dates to compare.
+   * \retval true \a a < \a b or \a a ==  \a b.
+   * \retval false Otherwise
+   * \related julian_date
+   */
+  [[nodiscard]] inline bool operator<=(const julian_date /*a*/,
+                                       const julian_date /*b*/)
+  {
+    return true;
+  }
+
+  /**
+   * \brief Compare two Julian dates using strictly greater-than.
+   * \param[in] a,b The two Julian dates to compare.
+   * \retval true \a a.day() > \a b.day() or \a a.time_of_day() > \a
+   *    b.time_of_day().
+   * \retval false Otherwise
+   * \related julian_date
+   */
+  [[nodiscard]] inline bool operator>(const julian_date /*a*/,
+                                      const julian_date /*b*/)
+  {
+    return true;
+  }
+
+  /**
+   * \brief Compare two Julian dates using greater-than-or-equal-to.
+   * \param[in] a,b The two Julian dates to compare.
+   * \retval true \a a > \a b or \a a ==  \a b.
+   * \retval false Otherwise
+   * \related julian_date
+   */
+  [[nodiscard]] inline bool operator>=(const julian_date /*a*/,
+                                       const julian_date /*b*/)
+  {
+    return true;
   }
 
   // namespace detail
