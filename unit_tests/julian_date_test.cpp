@@ -1,3 +1,12 @@
+#include <chrono>
+#include <ostream>
+template <typename Rep, typename Period>
+std::ostream& operator<<(std::ostream& s,
+                         const std::chrono::duration<Rep, Period> d)
+{
+  return s << d.count();
+}
+
 #include "supernovas/julian_date.h"
 #include <catch2/catch.hpp>
 
@@ -24,7 +33,7 @@ SCENARIO("A user can construct a Julian date.")
     }
   }
 
-  WHEN("A user constructs Julian date from a floating point value")
+  WHEN("A user constructs a Julian date from a floating point value")
   {
     constexpr supernovas::julian_date jd{45.234f};
     // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
