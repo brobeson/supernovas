@@ -20,6 +20,13 @@ endif()
 find_package(Lizard REQUIRED)
 include(CMakeToolsDefaultCompileOptions)
 
+include(FetchContent)
+FetchContent_Declare(
+  date_project
+  GIT_REPOSITORY https://github.com/HowardHinnant/date.git
+  GIT_TAG v3.0.1
+)
+FetchContent_MakeAvailable(date_project)
 set(CMAKE_DEBUG_POSTFIX "-d")
 add_subdirectory(supernovas)
 

@@ -35,6 +35,14 @@ SCENARIO("A user can construct a Julian date.")
       CHECK(jd.time_of_day() == 2.0218e13ns);
     }
   }
+
+  WHEN("A user constructs a Julian date from a calendar date")
+  {
+    using namespace date::literals;  // NOLINT(google-build-using-namespace)
+    constexpr supernovas::julian_date jd{2021_y / date::June / 3_d};
+    THEN("The day is correct") { CHECK(jd.day() == 21'154); }
+    AND_THEN("The time of day is correct") { CHECK(jd.time_of_day() == 0ns); }
+  }
 }
 
 SCENARIO("A user can compare Julian dates.")

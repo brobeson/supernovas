@@ -1,6 +1,10 @@
 #ifndef SUPERNOVAS_JULIAN_DATE_H
 #define SUPERNOVAS_JULIAN_DATE_H
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wuseless-cast"
+#include <date/date.h>
+#pragma GCC diagnostic pop
 #include <chrono>
 #include <type_traits>
 
@@ -49,6 +53,14 @@ namespace supernovas
      */
     template <typename Float>
     constexpr explicit julian_date(Float /*jd*/) noexcept
+    {}
+
+    /**
+     * \brief Construct a Julian date from a calendar date.
+     * \param[in] calendar_date The calendar date to convert to a Julian date.
+     */
+    constexpr explicit julian_date(
+      date::year_month_day /*calendar_date*/) noexcept
     {}
 
     /// The Julian date as a raw floating point value.
