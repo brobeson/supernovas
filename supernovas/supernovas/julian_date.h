@@ -6,29 +6,9 @@
 #include <date/date.h>
 #pragma GCC diagnostic pop
 #include <chrono>
-#include <cmath>
-#include <type_traits>
 
 namespace supernovas
 {
-  // namespace detail
-  // {
-  //   constexpr auto time_of_day(const long double t)
-  //   {
-  //     return t - std::floor(t);
-  //     // const auto fraction{t - std::floor(t)};
-  //     // constexpr std::chrono::nanoseconds ns_per_day{86'400'000'000'000};
-  //     // // return std::chrono::nanoseconds{
-  //     // //   static_cast<std::chrono::nanoseconds::rep>(fraction
-  //     // //                                              //  *
-  //     // // ns_per_day.count())};
-  //     // //                                              *
-  //     86'400'000'000'000)};
-  //     // using day = std::chrono::duration<long double, std::ratio<86400>>;
-  //     // return day{fraction};
-  //   }
-  // }  // namespace detail
-
   class julian_date final
   {
   public:
@@ -42,16 +22,6 @@ namespace supernovas
     constexpr julian_date() = default;
 
     /**
-     * \brief Construct a Julian date from a clock time point.
-     * \tparam Clock The type of clock for the time point.
-     * \param[in] time The time point to convert to a Julian date.
-     */
-    template <typename Clock>
-    constexpr explicit julian_date(
-      std::chrono::time_point<Clock> /*time*/) noexcept
-    {}
-
-    /**
      * \brief Construct a Julian date from a raw value.
      * \tparam Rep See https://en.cppreference.com/w/cpp/chrono/duration.
      * \tparam Period See https://en.cppreference.com/w/cpp/chrono/duration.
@@ -60,19 +30,6 @@ namespace supernovas
     template <typename Rep, typename Period>
     constexpr julian_date(day_type /*day*/,
                           std::chrono::duration<Rep, Period> /*time*/) noexcept
-    {}
-
-    /**
-     * \brief Construct a Julian date from a floating point value.
-     * \tparam Float The floating point type. This must be a floating point
-     *    type, or an integer type. Note that boolean and character types are
-     *    not allowed. If Float is an integer type, the time of day is
-     *    initialized to 0.
-     * \param[in] jd The Julian date number to convert to a julian_date object.
-     */
-    template <typename Float>
-    constexpr explicit julian_date(Float jd) noexcept
-      : m_day{static_cast<day_type>(jd)}
     {}
 
     /**

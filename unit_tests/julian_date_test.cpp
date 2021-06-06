@@ -21,30 +21,6 @@ SCENARIO("A user can construct a Julian date.")
     AND_THEN("The time of day is 0") { CHECK(jd.time_of_day() == 0ns); }
   }
 
-  WHEN("A user constructs a Julian date from a clock time point")
-  {
-    const supernovas::julian_date jd{
-      std::chrono::system_clock::time_point{1615273885865337375s}};
-    THEN("The day is correct") { CHECK(jd.day() == 2459282); }
-    AND_THEN("The time of day is correct")
-    {
-      // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-      CHECK(jd.time_of_day() == 6.908458e13ns);
-    }
-  }
-
-  WHEN("A user constructs a Julian date from a floating point value")
-  {
-    constexpr supernovas::julian_date jd{45.234f};
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-    THEN("The day is correct") { CHECK(jd.day() == 45); }
-    AND_THEN("The time of day is correct")
-    {
-      // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-      CHECK(jd.time_of_day() == 2.0218e13ns);
-    }
-  }
-
   WHEN("A user constructs a Julian date from a calendar date")
   {
     using namespace date::literals;  // NOLINT(google-build-using-namespace)
