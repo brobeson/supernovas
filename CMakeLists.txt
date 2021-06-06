@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.19)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-tools")
+include(FetchContent)
+FetchContent_Declare(
+  cmake-tools
+  GIT_REPOSITORY https://github.com/brobeson/cmake-tools.git
+  GIT_TAG main
+)
+FetchContent_MakeAvailable(cmake-tools)
+list(APPEND CMAKE_MODULE_PATH "${cmake-tools_SOURCE_DIR}")
+
 include(CMakeToolsVersionFromGit)
 project(
   supernovas
@@ -20,13 +28,12 @@ endif()
 find_package(Lizard REQUIRED)
 include(CMakeToolsDefaultCompileOptions)
 
-include(FetchContent)
 FetchContent_Declare(
-  date_project
+  date
   GIT_REPOSITORY https://github.com/HowardHinnant/date.git
   GIT_TAG v3.0.1
 )
-FetchContent_MakeAvailable(date_project)
+FetchContent_MakeAvailable(date)
 
 # BUG This is a work around for https://github.com/brobeson/supernovas/issues/1.
 list(REMOVE_ITEM CMAKE_TOOLS_COMPILE_OPTIONS -Wnoexcept)
