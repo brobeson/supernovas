@@ -9,6 +9,43 @@
 
 namespace supernovas
 {
+  namespace detail
+  {
+    constexpr std::chrono::nanoseconds ns_per_day{86'400'000'000'000};
+
+    inline auto calculate_tod_fraction(const std::chrono::nanoseconds ns)
+    {
+      return static_cast<long double>(ns.count()) / ns_per_day.count();
+    }
+
+    inline auto calculate_julian_date(
+      const date::year_month_day ymd,
+      const std::chrono::nanoseconds time_of_day) noexcept
+    {
+      const auto year{ymd.month() == date::January
+                          || ymd.month() == date::February
+                        ? static_cast<int>(ymd.year()) - 1
+                        : static_cast<int>(ymd.year())};
+      const auto month{ymd.month() == date::January
+                           || ymd.month() == date::February
+                         ? static_cast<unsigned>(ymd.month()) + 12
+                         : static_cast<unsigned>(ymd.month())};
+      const auto day{static_cast<unsigned int>(ymd.day())
+                     + calculate_tod_fraction(time_of_day)};
+      constexpr auto gregorian_change{date::year{1582} / date::October / 15};
+      const auto B{ymd > gregorian_change ? 2 - (year / 100) + (year / 100 / 4)
+                                          : 0};
+      const auto C{year < 0 ? std::floor(365.25 * year) - 0.75
+                            : std::floor(365.25 * year)};
+      const auto D{std::floor(30.6001 * (month + 1))};
+      const auto jd{B + C + D
+                    + day
+                    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+                    + 1720994.5};
+      return static_cast<int>(jd);
+    }
+  }  // namespace detail
+
   class julian_date final
   {
   public:
@@ -36,8 +73,13 @@ namespace supernovas
      * \brief Construct a Julian date from a calendar date.
      * \param[in] calendar_date The calendar date to convert to a Julian date.
      */
-    constexpr explicit julian_date(
-      date::year_month_day /*calendar_date*/) noexcept
+    template <typename Rep, typename Period>
+    inline explicit julian_date(
+      const date::year_month_day calendar_date,
+      const std::chrono::duration<Rep, Period> tod) noexcept
+      : m_day{detail::calculate_julian_date(
+        calendar_date, std::chrono::duration_cast<time_type>(tod))},
+        m_time_of_day{tod}
     {}
 
     /// The Julian date as a raw floating point value.

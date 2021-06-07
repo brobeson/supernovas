@@ -24,9 +24,26 @@ SCENARIO("A user can construct a Julian date.")
   WHEN("A user constructs a Julian date from a calendar date")
   {
     using namespace date::literals;  // NOLINT(google-build-using-namespace)
-    constexpr supernovas::julian_date jd{2021_y / date::June / 3_d};
-    THEN("The day is correct") { CHECK(jd.day() == 21'154); }
-    AND_THEN("The time of day is correct") { CHECK(jd.time_of_day() == 0ns); }
+    using namespace std::literals::chrono_literals;
+    // clang-format off
+    const auto [gregorian_date, time_of_day, expected_day, expected_tod]{
+      GENERATE(table<date::year_month_day,
+                     std::chrono::seconds,
+                     supernovas::julian_date::day_type,
+                     supernovas::julian_date::time_type>(
+        // This case is from Duffet-Smith and Zwart, "Practical Astronomy with your Calculate or Spreadsheet, 4th ed."
+        {{{2009_y / date::June / 19_d},    18h, 2'455'002,    18h},
+         // Remaining test cases are calculated at https://www.aavso.org/jd-calculator
+         {{2021_y / date::June /  6_d}, 81755s, 2'459'372, 81755s},
+         {{ -43_y / date::March / 15_d}, 0s, 1'705'428, 12h}
+        }))};
+    // clang-format on
+    const supernovas::julian_date jd{gregorian_date, time_of_day};
+    THEN("The day is correct") { CHECK(jd.day() == expected_day); }
+    AND_THEN("The time of day is correct")
+    {
+      CHECK(jd.time_of_day() == expected_tod);
+    }
   }
 }
 
