@@ -28,13 +28,6 @@ endif()
 find_package(Lizard REQUIRED)
 include(CMakeToolsDefaultCompileOptions)
 
-FetchContent_Declare(
-  date
-  GIT_REPOSITORY https://github.com/HowardHinnant/date.git
-  GIT_TAG v3.0.1
-)
-FetchContent_MakeAvailable(date)
-
 # BUG This is a work around for https://github.com/brobeson/supernovas/issues/1.
 list(REMOVE_ITEM CMAKE_TOOLS_COMPILE_OPTIONS -Wnoexcept)
 

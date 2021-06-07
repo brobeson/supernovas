@@ -1,3 +1,10 @@
+FetchContent_Declare(
+  date
+  GIT_REPOSITORY https://github.com/HowardHinnant/date.git
+  GIT_TAG v3.0.1
+)
+FetchContent_MakeAvailable(date)
+
 add_library(supernovas INTERFACE)
 target_include_directories(
   supernovas
@@ -13,7 +20,7 @@ add_lizard_target(
   ALL
   ARGUMENTS
     --CCN 10
-    --length 20
+    --length 30
     --arguments 5
     --warnings_only
     --working_threads 10
