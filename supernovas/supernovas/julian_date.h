@@ -5,10 +5,16 @@
 #pragma GCC diagnostic ignored "-Wuseless-cast"
 #include <date/date.h>
 #pragma GCC diagnostic pop
+#include <gsl/gsl_util>
 #include <chrono>
 
 namespace supernovas
 {
+  namespace detail
+  {
+    constexpr std::chrono::nanoseconds ns_per_day{86'400'000'000'000};
+  }  // namespace detail
+
   class julian_date final
   {
   public:
@@ -26,10 +32,16 @@ namespace supernovas
      * \tparam Rep See https://en.cppreference.com/w/cpp/chrono/duration.
      * \tparam Period See https://en.cppreference.com/w/cpp/chrono/duration.
      * \param[in] date The raw value to use as the Julian date.
+     * \param[in] time The time into the given \a day.
      */
     template <typename Rep, typename Period>
-    constexpr julian_date(day_type /*day*/,
-                          std::chrono::duration<Rep, Period> /*time*/) noexcept
+    constexpr julian_date(day_type day,
+                          std::chrono::duration<Rep, Period> time) noexcept
+      : m_day{day
+              + gsl::narrow<day_type>(time.count()
+                                      / detail::ns_per_day.count())},
+        m_time_of_day{std::chrono::duration_cast<std::chrono::nanoseconds>(time)
+                      % detail::ns_per_day}
     {}
 
     /**

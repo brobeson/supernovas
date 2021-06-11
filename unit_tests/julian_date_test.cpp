@@ -28,6 +28,32 @@ SCENARIO("A user can construct a Julian date.")
     THEN("The day is correct") { CHECK(jd.day() == 21'154); }
     AND_THEN("The time of day is correct") { CHECK(jd.time_of_day() == 0ns); }
   }
+
+  WHEN("A user constructs a Julian date from a Julian day and time-of-day")
+  {
+    using namespace std::literals::chrono_literals;
+    // clang-format off
+    const auto [julian_day, time_of_day, expected_julian_day, expected_tod]{
+      GENERATE(table<supernovas::julian_date::day_type,
+                     supernovas::julian_date::time_type,
+                     supernovas::julian_date::day_type,
+                     supernovas::julian_date::time_type>({
+        {0, 0s, 0, 0s},
+        {2'154'236, 13h, 2'154'236, 13h},
+        {-2'154'236, 13h, -2'154'236, 13h},
+        {2'154'236, 25h, 2'154'237, 1h},
+        {-2'154'236, 25h, -2'154'236, 1h},
+        {2'154'236, supernovas::detail::ns_per_day + 1ns, 2'154'237, 1ns}
+      }))};
+    // clang-format on
+    const supernovas::julian_date jd{julian_day, time_of_day};
+    CAPTURE(julian_day, time_of_day);
+    THEN("The day is correct") { CHECK(jd.day() == expected_julian_day); }
+    AND_THEN("The time of day is correct")
+    {
+      CHECK(jd.time_of_day() == expected_tod);
+    }
+  }
 }
 
 SCENARIO("A user can compare Julian dates.")
