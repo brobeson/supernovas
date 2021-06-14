@@ -1,0 +1,3 @@
+# Ignore local VS Code settings. We don't want to override another developer's
+# personalized setup.
+.vscode/settings.json
