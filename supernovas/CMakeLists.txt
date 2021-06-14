@@ -3,7 +3,7 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/HowardHinnant/date.git
   GIT_TAG v3.0.1
 )
-FetchContent_MakeAvailable(date)
+FetchContent_Declare(
   gsl
   GIT_REPOSITORY https://github.com/microsoft/GSL.git
   GIT_TAG v3.1.0

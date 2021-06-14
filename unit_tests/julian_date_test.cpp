@@ -14,6 +14,7 @@ using namespace std::literals::chrono_literals;
 
 SCENARIO("A user can construct a Julian date.")
 {
+  // #lizard forgives
   WHEN("A user default constructs a Julian date")
   {
     supernovas::julian_date jd;
