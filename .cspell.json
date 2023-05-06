@@ -2,5 +2,5 @@
   "version": "0.2",
   "enableGlobDot": true,
   "ignorePaths": [".git"],
-  "words": ["brobeson"]
+  "words": ["brobeson", "cpptools", "crey", "davidanson", "nosborn"]
 }
