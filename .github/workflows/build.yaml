@@ -1,0 +1,35 @@
+name: Build & Test
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches: [ main ]
+
+env:
+  SOURCE_DIRECTORY: source
+  BUILD_DIRECTORY: build
+
+jobs:
+  build:
+    name: Build and Test
+    strategy:
+      matrix:
+        build_type: ["Debug", "Release"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: ${{env.SOURCE_DIRECTORY}}
+      - name: Generate a Build System
+        run: >
+          cmake
+          -S ${SOURCE_DIRECTORY}
+          -B ${BUILD_DIRECTORY}
+          -D CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=on
+          -D CMAKE_BUILD_TYPE:STRING=${{matrix.build_type}}
+      - name: Build the Software
+        run: cmake --build ${BUILD_DIRECTORY} --parallel $(nproc)
+      - name: Run Unit Tests
+        working-directory: ${{env.BUILD_DIRECTORY}}
+        run: ctest --build-config ${{matrix.build_type}} --output-on-failure
