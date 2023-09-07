@@ -1,4 +1,4 @@
-set(_tests dummy_test)
+set(_tests dummy)
 foreach(_test IN LISTS _tests)
   add_executable(${_test} ${_test}.cpp)
   target_link_libraries(${_test} PRIVATE Catch2::Catch2WithMain)
