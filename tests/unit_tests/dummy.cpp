@@ -1,3 +1,4 @@
+#include "supernovas/constants.h"
 #include <catch2/catch_test_macros.hpp>
 
 SCENARIO("A developer wants to ensure tests build and run.")
@@ -8,7 +9,7 @@ SCENARIO("A developer wants to ensure tests build and run.")
         {
             THEN("the assertion passes")
             {
-                CHECK(true);
+                CHECK(supernovas::c == 299792458.0);
             }
         }
     }
