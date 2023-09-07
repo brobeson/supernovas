@@ -1,0 +1,12 @@
+if(CMAKE_SOURCE_DIR STREQUAL supernovas_SOURCE_DIR)
+  set(SUPERNOVAS_IS_SUBPROJECT false)
+else()
+  set(SUPERNOVAS_IS_SUBPROJECT true)
+endif()
+
+if(SUPERNOVAS_IS_SUBPROJECT)
+  set(_supernovas_default_build_tests false)
+else()
+  set(_supernovas_default_build_tests true)
+endif()
+option(SUPERNOVAS_BUILD_TESTS "Build the SuperNOVAS tests." ${_supernovas_default_build_tests})

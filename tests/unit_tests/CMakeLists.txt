@@ -1,0 +1,6 @@
+set(_tests dummy_test)
+foreach(_test IN LISTS _tests)
+  add_executable(${_test} ${_test}.cpp)
+  target_link_libraries(${_test} PRIVATE Catch2::Catch2WithMain)
+  catch_discover_tests(${_test} PROPERTIES LABELS "supernovas;unit")
+endforeach()
