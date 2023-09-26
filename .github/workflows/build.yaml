@@ -12,6 +12,7 @@ on:
 concurrency:
   group: ${{github.workflow}}-${{github.event.pull_request.number || github.ref}}
   cancel-in-progress: true
+
 jobs:
   staticAnalysis:
     name: Support Files
@@ -19,3 +20,16 @@ jobs:
   # build:
   #   name: Build & Test
   #   uses: brobeson/brobeson/.github/workflows/cpp.yaml@reusable_workflows
+  # CodeQuality:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     SOURCE: source
+  #     BUILD: build
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         path: ${{env.SOURCE}}
+  #     - name: cmake-format lint action
+  #       uses: puneetmatharu/cmake-format-lint-action@v1.0.4
+  #       with:
+  #         args: --check

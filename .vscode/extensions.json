@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "cschlosser.doxdocgen",
+    "davidanson.vscode-markdownlint",
+    "esbenp.prettier-vscode",
+    "ms-vscode.cpptools-extension-pack",
+    "streetsidesoftware.code-spell-checker",
+    "twxs.cmake"
+  ]
+}
