@@ -1,3 +1,7 @@
 {
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "[markdown][json][yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "SuperNOVAS: Format Support Files",
+      "detail": "Run Prettier on all project support files.",
+      "icon": {
+        "color": "terminal.ansiGreen",
+        "id": "pencil"
+      },
+      "command": "prettier",
+      "args": ["--write", "./**/*"],
+      "problemMatcher": []
+    },
+    {
+      "label": "SuperNOVAS: Quality Pipeline",
+      "detail": "Run multiple SuperNOVAS quality control tasks.",
+      "icon": { "color": "terminal.ansiGreen", "id": "play" },
+      "dependsOn": ["SuperNOVAS: Format Support Files"],
+      "problemMatcher": []
+    }
+  ]
+}
