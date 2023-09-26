@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
   SOURCE_DIRECTORY: source
@@ -23,11 +23,9 @@ jobs:
           path: ${{env.SOURCE_DIRECTORY}}
       - name: Generate a Build System
         run: >
-          cmake
-          -S ${SOURCE_DIRECTORY}
-          -B ${BUILD_DIRECTORY}
-          -D CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=on
-          -D CMAKE_BUILD_TYPE:STRING=${{matrix.build_type}}
+          cmake -S ${SOURCE_DIRECTORY} -B ${BUILD_DIRECTORY} -D
+          CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=on -D
+          CMAKE_BUILD_TYPE:STRING=${{matrix.build_type}}
       - name: Build the Software
         run: cmake --build ${BUILD_DIRECTORY} --parallel $(nproc)
       - name: Run Unit Tests
