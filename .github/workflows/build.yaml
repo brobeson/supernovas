@@ -14,9 +14,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  staticAnalysis:
-    name: Support Files
-    uses: brobeson/brobeson/.github/workflows/support_files.yaml@main
+  # staticAnalysis:
+  #   name: Support Files
+  #   uses: brobeson/brobeson/.github/workflows/support_files.yaml@main
+  dotFiles:
+    name: Project Files
+    uses: brobeson/SupportFileQuality/.github/workflows/support_files.yaml@v1
   # build:
   #   name: Build & Test
   #   uses: brobeson/brobeson/.github/workflows/cpp.yaml@reusable_workflows
