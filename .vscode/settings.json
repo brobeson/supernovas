@@ -1,6 +1,9 @@
 {
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
+  "files.associations": {
+    ".clang-*": "yaml"
+  },
   "[markdown][json][yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
