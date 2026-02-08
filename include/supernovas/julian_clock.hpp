@@ -24,7 +24,7 @@ namespace detail {
   // https://en.wikipedia.org/wiki/Julian_day#Converting_Julian_calendar_date_to_Julian_day_number
   // Last retrieved 2026 March 27
   return (367 * year) - (7 * (year + 5001 + (month - 9) / 7) / 4) +
-         (275 * month / 9) + day + 1729777;
+         (275 * month / 9) + day + 1'729'777;
 }
 
 [[nodiscard]] auto
@@ -37,7 +37,7 @@ fromGregorianCalendar(const std::chrono::year_month_day &date) {
   const auto month1{(month - 14) / 12};
   return (1461 * (year + 4800 + month1) / 4) +
          (367 * (month - 2 - 12 * month1) / 12) -
-         (3 * ((year + 4900 + month1) / 100) / 4) + day - 32075;
+         (3 * ((year + 4900 + month1) / 100) / 4) + day - 32'075;
 }
 
 [[nodiscard]] constexpr auto
@@ -166,7 +166,7 @@ constexpr auto calendar_date(const julian_day_number &jdn) {
   const auto I{static_cast<int>(day)};
   const auto F{day - I};
   auto B{I};
-  if (I > 2299160) {
+  if (I > 2'299'160) {
     const auto A{static_cast<int>((I - 1867216.25) / 36524.25)};
     B = I + A - A / 4 + 1;
   }
@@ -245,7 +245,7 @@ constexpr julian_day_number operator""_jdn(unsigned long long d) noexcept {
 } // namespace literals
 
 namespace detail {
-constexpr std::chrono::nanoseconds ns_per_day{86400000000000};
+constexpr std::chrono::nanoseconds ns_per_day{86'400'000'000'000};
 
 // Ensure the time is in the range [0, 1-day); adjust the day to account for
 // any change in time.
