@@ -55,8 +55,8 @@ SCENARIO("developers can increment and decrement julian_days") {
             {{0_jdn, 1_jdn, -1_jdn},
              {-1_jdn, 0_jdn, -2_jdn},
              {1_jdn, 2_jdn, 0_jdn},
-             {2147483647_jdn, -2147483648_jdn, 2147483646_jdn},
-             {-2147483648_jdn, -2147483647_jdn, 2147483647_jdn}}))};
+             {2'147'483'647_jdn, -2'147'483'648_jdn, 2'147'483'646_jdn},
+             {-2'147'483'648_jdn, -2'147'483'647_jdn, 2'147'483'647_jdn}}))};
     CAPTURE(start_day);
     WHEN("the day is post-incremented") {
       auto actual_end_day{start_day};
@@ -196,13 +196,13 @@ SCENARIO("developers can convert calendar dates <-> Julian day numbers") {
         GENERATE(table<std::chrono::year_month_day, novas::julian_day_number>(
             {{2009y / std::chrono::June / 19d, 2'455'002_jdn},
              {2026y / std::chrono::March / 22d, 2'461'122_jdn},
-             {1458y / std::chrono::January / 1d, 2253593_jdn},
+             {1458y / std::chrono::January / 1d, 2'253'593_jdn},
              // change over from Julian to Gregorian calendars
-             {1582y / std::chrono::October / 15d, 2299161_jdn},
-             {1582y / std::chrono::October / 4d, 2299160_jdn},
+             {1582y / std::chrono::October / 15d, 2'299'161_jdn},
+             {1582y / std::chrono::October / 4d, 2'299'160_jdn},
              // Skip over year 0: go from Dec 31 0001 BC to Jan 1 0001 AD
-             {1y / std::chrono::January / 1d, 1721424_jdn},
-             {-1y / std::chrono::December / 31d, 1721423_jdn},
+             {1y / std::chrono::January / 1d, 1'721'424_jdn},
+             {-1y / std::chrono::December / 31d, 1'721'423_jdn},
              {-4713y / std::chrono::January / 1d, 0_jdn},
              {-4717y / std::chrono::March / 1d, -1401_jdn}}))};
     CAPTURE(gregorian);
