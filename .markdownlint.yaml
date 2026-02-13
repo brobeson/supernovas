@@ -1,0 +1,3 @@
+# Don't check line length. I write one sentence per line and let the renderer
+# handle breaks.
+line-length: false
