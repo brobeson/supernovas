@@ -1,4 +1,6 @@
 {
   "version": "0.2",
+  "enableGlobDot": true,
+  "ignorePaths": [".git"],
   "words": ["brobeson"]
 }

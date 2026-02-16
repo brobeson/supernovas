@@ -13,9 +13,9 @@ concurrency:
   group: ${{github.workflow}}-${{github.event.pull_request.number || github.ref}}
   cancel-in-progress: true
 jobs:
-  staticAnalysis:
-    name: Support Files
-    uses: brobeson/brobeson/.github/workflows/support_files.yaml@main
+  projectSupport:
+    name: Project Support
+    uses: brobeson/SupportFileQuality/.github/workflows/support_files.yaml@v1
   # build:
   #   name: Build & Test
   #   uses: brobeson/brobeson/.github/workflows/cpp.yaml@reusable_workflows
