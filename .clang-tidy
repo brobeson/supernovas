@@ -1,0 +1,9 @@
+---
+Checks: "*,-altera-*,-fuchsia-*,-llvm-header-guard,-llvm-include-order,-llvmlibc-*,-readability-identifier-length"
+WarningsAsErrors: "*"
+HeaderFilterRegex: ".*"
+FormatStyle: none
+CheckOptions:
+  - key: readability-function-cognitive-complexity.Threshold
+    value: 10
+...

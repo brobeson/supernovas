@@ -1,0 +1,64 @@
+# This starter workflow is for a CMake project running on multiple platforms.
+# There is a different starter workflow if you just want a single platform.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
+name: CMake on multiple platforms
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    name: "${{ matrix.os }} | ${{ matrix.cpp_compiler}} | ${{ matrix.preset }}"
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        cpp_compiler: [g++, clang++, cl]
+        preset: [debug, release]
+        exclude:
+          - os: windows-latest
+            cpp_compiler: g++
+          - os: windows-latest
+            cpp_compiler: clang++
+          - os: ubuntu-latest
+            cpp_compiler: cl
+          - os: macos-latest
+            cpp_compiler: cl
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Ninja Generator
+        if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
+        run: echo "CMAKE_GENERATOR=Ninja" >> ${GITHUB_ENV}
+      - name: Configure CMake
+        run: >
+          cmake --preset ${{ matrix.preset }}
+          -D CMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -S ${{ github.workspace }}
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }}
+      - name: Test
+        # cspell:ignore ctest
+        run: ctest --preset ${{ matrix.preset }}
+
+  staticAnalysis:
+    runs-on: ubuntu-latest
+    name: Static Analysis
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run clang-format style check for C/C++/Protobuf programs.
+        uses: jidicula/clang-format-action@v4.16.0 # cspell:ignore jidicula
+        with:
+          clang-format-version: "20"
+      - name: Configure CMake
+        run: >
+          cmake
+          -B build
+          -S ${{ github.workspace }}
+          -D CMAKE_CXX_COMPILER=clang++
+          -D CMAKE_EXPORT_COMPILE_COMMANDS=true
+      - name: Run clang-tidy
+        run: run-clang-tidy -j $(nproc) -p build -style none
+      # - name: Run Cppcheck
+      #   run: cppcheck --version
