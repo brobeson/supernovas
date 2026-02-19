@@ -16,6 +16,7 @@ jobs:
   projectSupport:
     name: Project Support
     uses: brobeson/SupportFileQuality/.github/workflows/support_files.yaml@v1
-  # build:
-  #   name: Build & Test
-  #   uses: brobeson/brobeson/.github/workflows/cpp.yaml@reusable_workflows
+  build:
+    name: C++
+    # uses: brobeson/brobeson/.github/workflows/cpp.yaml@reusable_workflows
+    uses: brobeson/CppWorkflow/.github/workflows/build_all_the_things.yaml@v1
