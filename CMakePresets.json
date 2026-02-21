@@ -5,16 +5,26 @@
       "name": "default",
       "hidden": true,
       "binaryDir": "out/${presetName}",
-      "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      }
+    },
+    {
+      "name": "ninja-generator",
+      "hidden": true,
+      "generator": "Ninja",
+      "inherits": "default",
+      "condition": {
+        "type": "equals",
+        "lhs": "Linux",
+        "rhs": "${hostSystemName}"
       }
     },
     {
       "name": "release",
       "displayName": "Release",
       "description": "Configure a release build.",
-      "inherits": "default",
+      "inherits": "ninja-generator",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
@@ -23,7 +33,7 @@
       "name": "debug",
       "displayName": "Debug",
       "description": "Configure a debug build.",
-      "inherits": "default",
+      "inherits": "ninja-generator",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
