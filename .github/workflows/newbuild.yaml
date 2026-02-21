@@ -30,7 +30,8 @@ jobs:
       # the build_type list.
       matrix:
         os: [ubuntu-latest, windows-latest]
-        build_type: [Debug, Release]
+        # build_type: [Debug, Release]
+        preset: [debug]
         c_compiler: [gcc, clang, cl]
         include:
           - os: windows-latest
@@ -67,11 +68,16 @@ jobs:
         # required if you are using a single-configuration generator such as
         # make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        # run: >
+        #   cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        #   -D CMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        #   -D CMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        #   -D CMAKE_BUILD_TYPE=${{matrix.build_type}}
+        #   -S ${{ github.workspace }}
         run: >
-          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          cmake --preset ${{ matrix.preset }}
           -D CMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -D CMAKE_C_COMPILER=${{ matrix.c_compiler }}
-          -D CMAKE_BUILD_TYPE=${{matrix.build_type}}
           -S ${{ github.workspace }}
 
       - name: Build
