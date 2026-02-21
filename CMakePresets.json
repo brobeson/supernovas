@@ -28,5 +28,14 @@
         "CMAKE_BUILD_TYPE": "Debug"
       }
     }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Run a debug build.",
+      "configuration": "Debug",
+      "configurePreset": "debug"
+    }
   ]
 }

@@ -22,3 +22,8 @@ This job runs static analysis on files like configuration files and documentatio
 It also runs some static analysis that is the same for all languages.
 This is a reusable workflow from [brobeson/SupportFileQuality](https://github.com/brobeson/SupportFileQuality).
 Check the [README](https://github.com/brobeson/SupportFileQuality/blob/main/README.md) file for a description of the steps.
+
+| Platform | Configuration | Generator |
+| :------- | :------------ | :-------- |
+| Linux    | Debug         | Ninja     |
+|          | Release       | Ninja     |
