@@ -37,5 +37,17 @@
       "configuration": "Debug",
       "configurePreset": "debug"
     }
+  ],
+  "testPresets": [
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Run debug tests",
+      "configuration": "Debug",
+      "configurePreset": "debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
   ]
 }
