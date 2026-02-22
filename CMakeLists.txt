@@ -8,6 +8,7 @@ project(
 )
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/MP>")
 # add_subdirectory(include)
 
 option(
