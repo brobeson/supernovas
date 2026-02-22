@@ -40,3 +40,13 @@ jobs:
         run: cmake --build --preset ${{ matrix.preset }}
       - name: Test
         run: ctest --preset ${{ matrix.preset }}
+
+  staticAnalysis:
+    runs-on: ubuntu-latest
+    name: Static Analysis
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run clang-format style check for C/C++/Protobuf programs.
+        uses: jidicula/clang-format-action@v4.16.0
+        with:
+          clang-format-version: "20"
