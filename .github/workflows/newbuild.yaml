@@ -11,6 +11,7 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    name: "${{ matrix.os }} | ${{ matrix.cpp_compiler}} | ${{ matrix.preset }}"
 
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all
@@ -30,8 +31,8 @@ jobs:
       # the build_type list.
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        preset: [debug, release]
         cpp_compiler: [g++, clang++, cl]
+        preset: [debug, release]
         # include:
         #   - os: windows-latest
         #     c_compiler: cl
