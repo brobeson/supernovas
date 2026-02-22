@@ -53,14 +53,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set reusable strings
-        # Turn repeated input strings (such as the build output directory) into
-        # step outputs. These step outputs can be used throughout the workflow
-        # file.
-        id: strings
-        shell: bash
-        run: |
-          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+      # - name: Set reusable strings
+      #   # Turn repeated input strings (such as the build output directory) into
+      #   # step outputs. These step outputs can be used throughout the workflow
+      #   # file.
+      #   id: strings
+      #   shell: bash
+      #   run: |
+      #     echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
       - name: Set Ninja Generator
         if: ${{ runner.os == 'Linux' }}
@@ -86,7 +86,7 @@ jobs:
         # needed because the default Windows generator is a multi-config
         # generator (Visual Studio generator).
         # run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
-        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --preset ${{ matrix.preset }}
+        run: cmake --build --preset ${{ matrix.preset }}
 
       - name: Test
         # working-directory: ${{ steps.strings.outputs.build-output-dir }}
