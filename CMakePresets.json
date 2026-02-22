@@ -35,6 +35,13 @@
       "description": "Run a debug build.",
       "configuration": "Debug",
       "configurePreset": "debug"
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Run a release build.",
+      "configuration": "Release",
+      "configurePreset": "release"
     }
   ],
   "testPresets": [
@@ -44,6 +51,16 @@
       "description": "Run debug tests",
       "configuration": "Debug",
       "configurePreset": "debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Run release tests",
+      "configuration": "Release",
+      "configurePreset": "release",
       "output": {
         "outputOnFailure": true
       }
