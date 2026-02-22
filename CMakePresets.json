@@ -46,24 +46,27 @@
   ],
   "testPresets": [
     {
-      "name": "debug",
-      "displayName": "Debug",
-      "description": "Run debug tests",
-      "configuration": "Debug",
-      "configurePreset": "debug",
+      "name": "default",
+      "hidden": true,
       "output": {
         "outputOnFailure": true
       }
     },
     {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Run debug tests",
+      "inherits": "default",
+      "configuration": "Debug",
+      "configurePreset": "debug"
+    },
+    {
       "name": "release",
       "displayName": "Release",
       "description": "Run release tests",
+      "inherits": "default",
       "configuration": "Release",
-      "configurePreset": "release",
-      "output": {
-        "outputOnFailure": true
-      }
+      "configurePreset": "release"
     }
   ]
 }
