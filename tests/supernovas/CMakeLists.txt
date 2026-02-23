@@ -1,5 +1,6 @@
 include(CPM)
-CPMAddPackage("gh:catchorg/Catch2@3.12.0") # cspell:ignore catchorg
+CPMAddPackage(URI "gh:catchorg/Catch2@3.12.0" SYSTEM) # cspell:ignore catchorg
+set_target_properties(Catch2 Catch2WithMain PROPERTIES EXPORT_COMPILE_COMMANDS false)
 include("${Catch2_SOURCE_DIR}/extras/Catch.cmake")
 
 add_executable(sample_test sample_test.cpp)
