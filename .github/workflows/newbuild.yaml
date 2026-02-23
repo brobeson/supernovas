@@ -39,6 +39,7 @@ jobs:
       - name: Build
         run: cmake --build --preset ${{ matrix.preset }}
       - name: Test
+        # cspell:ignore ctest
         run: ctest --preset ${{ matrix.preset }}
 
   staticAnalysis:
@@ -47,6 +48,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run clang-format style check for C/C++/Protobuf programs.
-        uses: jidicula/clang-format-action@v4.16.0
+        uses: jidicula/clang-format-action@v4.16.0 # cspell:ignore jidicula
         with:
           clang-format-version: "20"
+      - name: Configure CMake
+        run: cmake --preset release -S ${{ github.workspace }}
+      - name: Run Cppcheck
+        run: cppcheck --version
