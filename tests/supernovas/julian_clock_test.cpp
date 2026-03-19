@@ -47,6 +47,11 @@ SCENARIO("developers can negate a julian_day_number", "[unit]") {
   }
 }
 
+SCENARIO("numeric limits exist for julian_day", "[unit]") {
+  CHECK(std::numeric_limits<novas::julian_day>::max() == 2'147'483'647);
+  CHECK(std::numeric_limits<novas::julian_day>::min() == -2'147'483'648);
+}
+
 SCENARIO("developers can increment and decrement julian_days") {
   GIVEN("a julian_day_number") {
     const auto [start_day, expected_incremented, expected_decremented]{

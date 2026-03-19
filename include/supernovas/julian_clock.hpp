@@ -455,4 +455,17 @@ constexpr julian_date operator""_jd(long double date) noexcept {
 #endif
 } // namespace novas
 
+namespace std {
+template <>
+constexpr novas::julian_day numeric_limits<novas::julian_day>::max() noexcept {
+  return novas::julian_day{
+      std::numeric_limits<novas::julian_day::day_type>::max()};
+}
+
+template <>
+constexpr novas::julian_day numeric_limits<novas::julian_day>::min() noexcept {
+  return novas::julian_day{
+      std::numeric_limits<novas::julian_day::day_type>::min()};
+}
+} // namespace std
 #endif
