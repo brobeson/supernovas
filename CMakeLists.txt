@@ -19,6 +19,9 @@ set(
   HELP "Default value for CXX_STANDARD_REQUIRED target property."
   VALUE on
 )
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
+add_subdirectory(include)
 
 option(
   SUPERNOVAS_BUILD_TESTS
