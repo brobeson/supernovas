@@ -1,6 +1,7 @@
 {
   "version": "0.2",
   "enableGlobDot": true,
-  "ignorePaths": [".git"],
+  "dictionaries": ["cpp-refined"],
+  "ignorePaths": [".git", "CPM.cmake"],
   "words": ["brobeson"]
 }
