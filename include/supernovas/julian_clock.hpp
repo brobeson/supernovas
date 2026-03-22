@@ -22,6 +22,44 @@ public:
   /// \return The number of days since the start of the Julian epoch.
   constexpr day_type day() const noexcept { return m_day; }
 
+  /**
+   * \brief Pre-increment this Julian day
+   * \return A reference to this Julian day after incrementing.
+   */
+  constexpr auto &operator++() noexcept {
+    ++m_day;
+    return *this;
+  }
+
+  /**
+   * \brief Post-increment this Julian day
+   * \return A copy of this Julian before incrementing.
+   */
+  constexpr auto operator++(int) noexcept {
+    auto original{*this};
+    ++(*this);
+    return original;
+  }
+
+  /**
+   * \brief Pre-decrement this Julian day
+   * \return A reference to this Julian day after decrementing.
+   */
+  constexpr auto &operator--() noexcept {
+    --m_day;
+    return *this;
+  }
+
+  /**
+   * \brief Post-decrement this Julian day
+   * \return A copy of this Julian before decrementing.
+   */
+  constexpr auto operator--(int) noexcept {
+    auto original{*this};
+    --(*this);
+    return original;
+  }
+
 private:
   day_type m_day;
 };
