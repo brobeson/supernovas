@@ -105,14 +105,26 @@ SCENARIO("developers can add and subtract days") {
         table<novas::julian_day, std::chrono::days::rep, novas::julian_day,
               novas::julian_day>({{0_jd, 3, 3_jd, -3_jd}}))};
     CAPTURE(start_day, delta_days);
-    WHEN("the delta is added") {
+    WHEN("the delta is added with compound assignment") {
       start_day += std::chrono::days{delta_days};
       THEN("the julian_day matches") { CHECK(start_day == expected_added); }
     }
-    WHEN("the delta is subtracted") {
+    WHEN("the delta is added") {
+      const auto actual_day{start_day + std::chrono::days{delta_days}};
+      THEN("the new julian_day is correct") {
+        CHECK(actual_day == expected_added);
+      }
+    }
+    WHEN("the delta is subtracted with compound assignment") {
       start_day -= std::chrono::days{delta_days};
       THEN("the julian_day matches") {
         CHECK(start_day == expected_subtracted);
+      }
+    }
+    WHEN("the delta is subtracted") {
+      const auto actual_day{start_day - std::chrono::days{delta_days}};
+      THEN("the new julian_day is correct") {
+        CHECK(actual_day == expected_subtracted);
       }
     }
   }

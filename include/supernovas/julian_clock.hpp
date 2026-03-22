@@ -103,6 +103,28 @@ constexpr julian_day operator-(const julian_day &jd) {
   return julian_day{-jd.day()};
 }
 
+/**
+ * \brief Add a number of days to a Julian day
+ * \param[in] jd Add days to this Julian day.
+ * \param[in] days Add these days to \a jd.
+ * \return Effectively \a jd.day() + \a days.count().
+ */
+constexpr julian_day operator+(const julian_day &jd,
+                               const std::chrono::days &days) {
+  return julian_day(jd.day() + days.count());
+}
+
+/**
+ * \brief Subtract a number of days from a Julian day
+ * \param[in] jd Subtract days from this Julian day.
+ * \param[in] days Subtract these days from \a jd.
+ * \return Effectively \a jd.day() - \a days.count().
+ */
+constexpr julian_day operator-(const julian_day &jd,
+                               const std::chrono::days &days) {
+  return julian_day(jd.day() - days.count());
+}
+
 namespace literals {
 /**
  * \brief Construct a literal Julian day.
