@@ -36,6 +36,15 @@ constexpr bool operator==(const julian_day &a, const julian_day &b) {
   return a.day() == b.day();
 }
 
+/**
+ * \brief Negate a Julian day
+ * \param[in] jd Negate this Julian day.
+ * \return Effectively, `julian_day{-jd.day()}`
+ */
+constexpr julian_day operator-(const julian_day &jd) {
+  return julian_day{-jd.day()};
+}
+
 namespace literals {
 /**
  * \brief Construct a literal Julian day.
