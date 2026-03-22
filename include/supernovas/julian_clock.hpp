@@ -125,6 +125,17 @@ constexpr julian_day operator-(const julian_day &jd,
   return julian_day(jd.day() - days.count());
 }
 
+/**
+ * \brief Insert a Julian day into an output stream
+ * \param[in] s Insert the Julian day into this stream.
+ * \param[in] d Insert this Julian day into a stream.
+ * \return A reference to the stream \a s after insert \a d.
+ */
+inline std::ostream &operator<<(std::ostream &s, const julian_day d) {
+  s << d.day();
+  return s;
+}
+
 namespace literals {
 /**
  * \brief Construct a literal Julian day.

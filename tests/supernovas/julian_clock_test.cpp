@@ -168,3 +168,9 @@ SCENARIO("developers can compare two julian_days") {
     }
   }
 }
+
+SCENARIO("developers can insert julian_days into a stream") {
+  std::ostringstream s;
+  s << 2456_jd;
+  CHECK(s.str() == "2456");
+}
