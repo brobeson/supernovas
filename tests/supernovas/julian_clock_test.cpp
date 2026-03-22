@@ -129,3 +129,42 @@ SCENARIO("developers can add and subtract days") {
     }
   }
 }
+
+SCENARIO("developers can compare two julian_days") {
+  // Let the compiler generate the comparison operators, but keep this test
+  // in case changes to the class cause the compiler to generate unexpected
+  // comparisons.
+  GIVEN("two julian_day") {
+    const auto [a, b, expected_equal, expected_unequal, expected_less,
+                expected_less_equal, expected_greater, expected_greater_equal]{
+        GENERATE(table<novas::julian_day, novas::julian_day, bool, bool, bool,
+                       bool, bool, bool>(
+            {{0_jd, 0_jd, true, false, false, true, false, true},
+             {0_jd, 1_jd, false, true, true, true, false, false},
+             {0_jd, -1_jd, false, true, false, false, true, true}}))};
+    WHEN("the two days are compared for equality") {
+      const auto actual{a == b};
+      THEN("the result is correct") { CHECK(actual == expected_equal); }
+    }
+    WHEN("The two days are compared for inequality") {
+      const auto actual{a != b};
+      THEN("The result is correct") { CHECK(actual == expected_unequal); }
+    }
+    WHEN("The two days are compared for less-than") {
+      const auto actual{a < b};
+      THEN("The result is correct") { CHECK(actual == expected_less); }
+    }
+    WHEN("The two days are compared for less-than-or-equal") {
+      const auto actual{a <= b};
+      THEN("The result is correct") { CHECK(actual == expected_less_equal); }
+    }
+    WHEN("The two days are compared for greater-than") {
+      const auto actual{a > b};
+      THEN("The result is correct") { CHECK(actual == expected_greater); }
+    }
+    WHEN("The two days are compared for greater-than-or-equal") {
+      const auto actual{a >= b};
+      THEN("The result is correct") { CHECK(actual == expected_greater_equal); }
+    }
+  }
+}
