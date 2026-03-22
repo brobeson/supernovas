@@ -98,3 +98,22 @@ SCENARIO("developers can increment and decrement julian_days") {
     }
   }
 }
+
+SCENARIO("developers can add and subtract days") {
+  GIVEN("a julian_day") {
+    auto [start_day, delta_days, expected_added, expected_subtracted]{GENERATE(
+        table<novas::julian_day, std::chrono::days::rep, novas::julian_day,
+              novas::julian_day>({{0_jd, 3, 3_jd, -3_jd}}))};
+    CAPTURE(start_day, delta_days);
+    WHEN("the delta is added") {
+      start_day += std::chrono::days{delta_days};
+      THEN("the julian_day matches") { CHECK(start_day == expected_added); }
+    }
+    WHEN("the delta is subtracted") {
+      start_day -= std::chrono::days{delta_days};
+      THEN("the julian_day matches") {
+        CHECK(start_day == expected_subtracted);
+      }
+    }
+  }
+}

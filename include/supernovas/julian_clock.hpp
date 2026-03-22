@@ -60,6 +60,26 @@ public:
     return original;
   }
 
+  /**
+   * \brief Add a number of days to this Julian day
+   * \param[in] d Add this number of days to the Julian day.
+   * \return A reference to this Julian day after adding \a d days.
+   */
+  constexpr auto &operator+=(const std::chrono::days &d) {
+    m_day += d.count();
+    return *this;
+  }
+
+  /**
+   * \brief Subtract a number of days from this Julian day
+   * \param[in] d Subtract this number of days from the Julian day.
+   * \return A reference to this Julian day after subtracting \a d days.
+   */
+  constexpr auto &operator-=(const std::chrono::days &d) {
+    m_day -= d.count();
+    return *this;
+  }
+
 private:
   day_type m_day;
 };
