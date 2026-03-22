@@ -23,6 +23,16 @@ public:
   constexpr day_type day() const noexcept { return m_day; }
 
   /**
+   * \brief Compare two Julian days
+   * \return The same result as comparing two integers.
+   */
+  constexpr bool operator==(const julian_day &) const noexcept = default;
+
+  /// \copydoc operator==(const julian_day&)
+  constexpr std::strong_ordering
+  operator<=>(const julian_day &) const noexcept = default;
+
+  /**
    * \brief Pre-increment this Julian day
    * \return A reference to this Julian day after incrementing.
    */
@@ -83,16 +93,6 @@ public:
 private:
   day_type m_day;
 };
-
-/**
- * \brief Compare two Julian days for equality
- * \param[in] a,b Compare these two Julian days.
- * \retval true \a a.day() == \a b.day()
- * \retval false \a a.day() != \a b.day()
- */
-constexpr bool operator==(const julian_day &a, const julian_day &b) {
-  return a.day() == b.day();
-}
 
 /**
  * \brief Negate a Julian day
