@@ -45,3 +45,56 @@ SCENARIO("developers can negate a julian_day", "[unit]") {
     }
   }
 }
+
+SCENARIO("developers can increment and decrement julian_days") {
+  GIVEN("a julian_day") {
+    const auto [start_day, expected_incremented, expected_decremented]{
+        GENERATE(table<novas::julian_day, novas::julian_day, novas::julian_day>(
+            {{0_jd, 1_jd, -1_jd},
+             {-1_jd, 0_jd, -2_jd},
+             {1_jd, 2_jd, 0_jd},
+             {2147483647_jd, -2147483648_jd, 2147483646_jd},
+             {-2147483648_jd, -2147483647_jd, 2147483647_jd}}))};
+    CAPTURE(start_day);
+    WHEN("the day is post-incremented") {
+      auto actual_end_day{start_day};
+      const auto actual_start_day{actual_end_day++};
+      THEN("the new day is one more than the starting day") {
+        CHECK(actual_end_day == expected_incremented);
+      }
+      THEN("the returned day is the same as the starting day") {
+        CHECK(actual_start_day == start_day);
+      }
+    }
+    WHEN("the day is pre-incremented") {
+      auto actual_end_day{start_day};
+      const auto actual_start_day{++actual_end_day};
+      THEN("the new day is one more than the starting day") {
+        CHECK(actual_end_day == expected_incremented);
+      }
+      THEN("the returned day is the same as the new day") {
+        CHECK(actual_start_day == expected_incremented);
+      }
+    }
+    WHEN("the day is post-decremented") {
+      auto actual_end_day{start_day};
+      const auto actual_start_day{actual_end_day--};
+      THEN("the new day is one less than the starting day") {
+        CHECK(actual_end_day == expected_decremented);
+      }
+      THEN("the returned day is the same as the starting day") {
+        CHECK(actual_start_day == start_day);
+      }
+    }
+    WHEN("the day is pre-decremented") {
+      auto actual_end_day{start_day};
+      const auto actual_start_day{--actual_end_day};
+      THEN("the new day is one less than the starting day") {
+        CHECK(actual_end_day == expected_decremented);
+      }
+      THEN("the returned day is the same as the new day") {
+        CHECK(actual_start_day == expected_decremented);
+      }
+    }
+  }
+}
