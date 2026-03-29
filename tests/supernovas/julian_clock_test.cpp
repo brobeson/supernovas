@@ -5,41 +5,41 @@
 using namespace novas::literals;
 using namespace std::chrono_literals;
 
-SCENARIO("julian_day meets type requirements", "[unit]") {
-  CHECK(std::is_constructible_v<novas::julian_day>);
-  CHECK(std::is_default_constructible_v<novas::julian_day>);
-  CHECK(std::is_trivially_move_assignable_v<novas::julian_day>);
-  CHECK(std::is_trivially_move_constructible_v<novas::julian_day>);
-  CHECK(std::is_trivially_copyable_v<novas::julian_day>);
-  CHECK(std::is_trivially_copy_assignable_v<novas::julian_day>);
-  CHECK(std::is_trivially_copy_constructible_v<novas::julian_day>);
-  CHECK(std::is_standard_layout_v<novas::julian_day>);
-  CHECK(std::is_integral_v<novas::julian_day::day_type>);
+SCENARIO("julian_day_number meets type requirements", "[unit]") {
+  CHECK(std::is_constructible_v<novas::julian_day_number>);
+  CHECK(std::is_default_constructible_v<novas::julian_day_number>);
+  CHECK(std::is_trivially_move_assignable_v<novas::julian_day_number>);
+  CHECK(std::is_trivially_move_constructible_v<novas::julian_day_number>);
+  CHECK(std::is_trivially_copyable_v<novas::julian_day_number>);
+  CHECK(std::is_trivially_copy_assignable_v<novas::julian_day_number>);
+  CHECK(std::is_trivially_copy_constructible_v<novas::julian_day_number>);
+  CHECK(std::is_standard_layout_v<novas::julian_day_number>);
+  CHECK(std::is_integral_v<novas::julian_day_number::day_type>);
 }
 
-SCENARIO("developers can creat julian_day literals", "[unit]") {
-  CHECK(0_jd == novas::julian_day{});
-  CHECK(2'451'545_jd == novas::julian_day{2'451'545});
-  CHECK(-2'451'545_jd == novas::julian_day{-2'451'545});
+SCENARIO("developers can creat julian_day_number literals", "[unit]") {
+  CHECK(0_jdn == novas::julian_day_number{});
+  CHECK(2'451'545_jdn == novas::julian_day_number{2'451'545});
+  CHECK(-2'451'545_jdn == novas::julian_day_number{-2'451'545});
 }
 
 SCENARIO("developers can retrieve the raw day number") {
   // There are no classes of input data for this. Run a few assertions to
   // ensure it's not hard-coded `return 0` or something like that.
-  CHECK((0_jd).day() == 0);
-  CHECK((1_jd).day() == 1);
-  CHECK(novas::julian_day{-1}.day() == -1);
+  CHECK((0_jdn).day() == 0);
+  CHECK((1_jdn).day() == 1);
+  CHECK(novas::julian_day_number{-1}.day() == -1);
 }
 
-SCENARIO("developers can negate a julian_day", "[unit]") {
-  GIVEN("a julian_day") {
-    const auto [original, expected]{
-        GENERATE(table<novas::julian_day, novas::julian_day::day_type>(
-            {{0_jd, 0},
-             {1_jd, -1},
-             {novas::julian_day{-1}, 1},
-             {2'147'483'647_jd, -2'147'483'647},
-             {novas::julian_day{-2'147'483'648}, -2'147'483'648}}))};
+SCENARIO("developers can negate a julian_day_number", "[unit]") {
+  GIVEN("a julian_day_number") {
+    const auto [original, expected]{GENERATE(
+        table<novas::julian_day_number, novas::julian_day_number::day_type>(
+            {{0_jdn, 0},
+             {1_jdn, -1},
+             {novas::julian_day_number{-1}, 1},
+             {2'147'483'647_jdn, -2'147'483'647},
+             {novas::julian_day_number{-2'147'483'648}, -2'147'483'648}}))};
     CAPTURE(original, expected);
     WHEN("the day is negated") {
       THEN("the new day is correct") { CHECK((-original).day() == expected); }
@@ -48,14 +48,15 @@ SCENARIO("developers can negate a julian_day", "[unit]") {
 }
 
 SCENARIO("developers can increment and decrement julian_days") {
-  GIVEN("a julian_day") {
+  GIVEN("a julian_day_number") {
     const auto [start_day, expected_incremented, expected_decremented]{
-        GENERATE(table<novas::julian_day, novas::julian_day, novas::julian_day>(
-            {{0_jd, 1_jd, -1_jd},
-             {-1_jd, 0_jd, -2_jd},
-             {1_jd, 2_jd, 0_jd},
-             {2147483647_jd, -2147483648_jd, 2147483646_jd},
-             {-2147483648_jd, -2147483647_jd, 2147483647_jd}}))};
+        GENERATE(table<novas::julian_day_number, novas::julian_day_number,
+                       novas::julian_day_number>(
+            {{0_jdn, 1_jdn, -1_jdn},
+             {-1_jdn, 0_jdn, -2_jdn},
+             {1_jdn, 2_jdn, 0_jdn},
+             {2147483647_jdn, -2147483648_jdn, 2147483646_jdn},
+             {-2147483648_jdn, -2147483647_jdn, 2147483647_jdn}}))};
     CAPTURE(start_day);
     WHEN("the day is post-incremented") {
       auto actual_end_day{start_day};
@@ -101,30 +102,33 @@ SCENARIO("developers can increment and decrement julian_days") {
 }
 
 SCENARIO("developers can add and subtract days") {
-  GIVEN("a julian_day") {
-    auto [start_day, delta_days, expected_added, expected_subtracted]{GENERATE(
-        table<novas::julian_day, std::chrono::days::rep, novas::julian_day,
-              novas::julian_day>({{0_jd, 3, 3_jd, -3_jd}}))};
+  GIVEN("a julian_day_number") {
+    auto [start_day, delta_days, expected_added, expected_subtracted]{
+        GENERATE(table<novas::julian_day_number, std::chrono::days::rep,
+                       novas::julian_day_number, novas::julian_day_number>(
+            {{0_jdn, 3, 3_jdn, -3_jdn}}))};
     CAPTURE(start_day, delta_days);
     WHEN("the delta is added with compound assignment") {
       start_day += std::chrono::days{delta_days};
-      THEN("the julian_day matches") { CHECK(start_day == expected_added); }
+      THEN("the julian_day_number matches") {
+        CHECK(start_day == expected_added);
+      }
     }
     WHEN("the delta is added") {
       const auto actual_day{start_day + std::chrono::days{delta_days}};
-      THEN("the new julian_day is correct") {
+      THEN("the new julian_day_number is correct") {
         CHECK(actual_day == expected_added);
       }
     }
     WHEN("the delta is subtracted with compound assignment") {
       start_day -= std::chrono::days{delta_days};
-      THEN("the julian_day matches") {
+      THEN("the julian_day_number matches") {
         CHECK(start_day == expected_subtracted);
       }
     }
     WHEN("the delta is subtracted") {
       const auto actual_day{start_day - std::chrono::days{delta_days}};
-      THEN("the new julian_day is correct") {
+      THEN("the new julian_day_number is correct") {
         CHECK(actual_day == expected_subtracted);
       }
     }
@@ -135,14 +139,14 @@ SCENARIO("developers can compare two julian_days") {
   // Let the compiler generate the comparison operators, but keep this test
   // in case changes to the class cause the compiler to generate unexpected
   // comparisons.
-  GIVEN("two julian_day") {
+  GIVEN("two julian_day_number") {
     const auto [a, b, expected_equal, expected_unequal, expected_less,
                 expected_less_equal, expected_greater, expected_greater_equal]{
-        GENERATE(table<novas::julian_day, novas::julian_day, bool, bool, bool,
-                       bool, bool, bool>(
-            {{0_jd, 0_jd, true, false, false, true, false, true},
-             {0_jd, 1_jd, false, true, true, true, false, false},
-             {0_jd, -1_jd, false, true, false, false, true, true}}))};
+        GENERATE(table<novas::julian_day_number, novas::julian_day_number, bool,
+                       bool, bool, bool, bool, bool>(
+            {{0_jdn, 0_jdn, true, false, false, true, false, true},
+             {0_jdn, 1_jdn, false, true, true, true, false, false},
+             {0_jdn, -1_jdn, false, true, false, false, true, true}}))};
     WHEN("the two days are compared for equality") {
       const auto actual{a == b};
       THEN("the result is correct") { CHECK(actual == expected_equal); }
@@ -172,14 +176,16 @@ SCENARIO("developers can compare two julian_days") {
 
 SCENARIO("developers can insert julian_days into a stream") {
   std::ostringstream s;
-  s << 2456_jd;
+  s << 2456_jdn;
   CHECK(s.str() == "2456");
 }
 
 namespace {
 // In CHECK_THROWS_AS(), the compiler seems to optimize out a lambda; it
 // wouldn't throw the exception. Using a normal function works.
-auto makeInvalidJulianDay(const auto &date) { return novas::julian_day{date}; }
+auto makeInvalidJulianDay(const auto &date) {
+  return novas::julian_day_number{date};
+}
 } // namespace
 
 SCENARIO("developers can convert calendar dates to julian_days") {
@@ -187,22 +193,22 @@ SCENARIO("developers can convert calendar dates to julian_days") {
     const auto [gregorian, expected_julian]{
         // I used this as the source of truth for date conversion:
         // https://numerical.recipes/julian.html
-        GENERATE(table<std::chrono::year_month_day, novas::julian_day>(
-            {{2009y / std::chrono::June / 19d, 2'455'002_jd},
-             {2026y / std::chrono::March / 22d, 2'461'122_jd},
-             {1458y / std::chrono::January / 1d, 2253593_jd},
+        GENERATE(table<std::chrono::year_month_day, novas::julian_day_number>(
+            {{2009y / std::chrono::June / 19d, 2'455'002_jdn},
+             {2026y / std::chrono::March / 22d, 2'461'122_jdn},
+             {1458y / std::chrono::January / 1d, 2253593_jdn},
              // change over from Julian to Gregorian calendars
-             {1582y / std::chrono::October / 15d, 2299161_jd},
-             {1582y / std::chrono::October / 4d, 2299160_jd},
+             {1582y / std::chrono::October / 15d, 2299161_jdn},
+             {1582y / std::chrono::October / 4d, 2299160_jdn},
              // Skip over year 0: go from Dec 31 0001 BC to Jan 1 0001 AD
-             {1y / std::chrono::January / 1d, 1721424_jd},
-             {-1y / std::chrono::December / 31d, 1721423_jd},
-             {-4713y / std::chrono::January / 1d, 0_jd},
-             {-4717y / std::chrono::March / 1d, -1401_jd}}))};
+             {1y / std::chrono::January / 1d, 1721424_jdn},
+             {-1y / std::chrono::December / 31d, 1721423_jdn},
+             {-4713y / std::chrono::January / 1d, 0_jdn},
+             {-4717y / std::chrono::March / 1d, -1401_jdn}}))};
     CAPTURE(gregorian);
-    WHEN("the Gregorian date is converted to a julian_day") {
-      THEN("the julian_day is correct") {
-        CHECK(novas::julian_day{gregorian} == expected_julian);
+    WHEN("the Gregorian date is converted to a julian_day_number") {
+      THEN("the julian_day_number is correct") {
+        CHECK(novas::julian_day_number{gregorian} == expected_julian);
       }
     }
   }
@@ -237,7 +243,7 @@ SCENARIO("The Julian clock can convert Gregorian to Julian", "[unit]")
     using namespace std::chrono_literals;
     const auto [gregorian, expected]{
       GENERATE(table<std::chrono::year_month_day, novas::julian_date>(
-        {{2024y / std::chrono::January / 1d, 0_jd}}))};
+        {{2024y / std::chrono::January / 1d, 0_jdn}}))};
     WHEN("the Julian clock converts to the Julian date")
     {
       const auto actual{novas::julian_clock::to_julian_date(gregorian)};

@@ -8,30 +8,30 @@ namespace novas {
 using julian_time = std::chrono::nanoseconds;
 
 namespace detail {
-[[nodiscard]] auto
-fromJulianCalendar(const std::chrono::year_month_day &julian) {
+[[nodiscard]] auto fromJulianCalendar(const std::chrono::year_month_day &date) {
   using namespace std::chrono_literals;
-  if (1582y / std::chrono::October / 4d < julian ||
-      julian < -4717y / std::chrono::March / 1d) {
+  if (1582y / std::chrono::October / 4d < date ||
+      date < -4717y / std::chrono::March / 1d) {
     throw std::invalid_argument{"is not a valid date"};
   }
-  if (julian.year() == 0y) {
+  if (date.year() == 0y) {
     throw std::invalid_argument{"0 is not a valid year"};
   }
-  const auto year{julian.year() < 0y ? static_cast<int>(julian.year()) + 1
-                                     : static_cast<int>(julian.year())};
-  const auto month{static_cast<int>(static_cast<unsigned int>(julian.month()))};
-  const auto day{static_cast<int>(static_cast<unsigned int>(julian.day()))};
+  const auto year{date.year() < 0y ? static_cast<int>(date.year()) + 1
+                                   : static_cast<int>(date.year())};
+  const auto month{static_cast<int>(static_cast<unsigned int>(date.month()))};
+  const auto day{static_cast<int>(static_cast<unsigned int>(date.day()))};
   // https://en.wikipedia.org/wiki/Julian_day#Converting_Julian_calendar_date_to_Julian_day_number
   // Last retrieved 2026 March 27
   return (367 * year) - (7 * (year + 5001 + (month - 9) / 7) / 4) +
          (275 * month / 9) + day + 1729777;
 }
 
-[[nodiscard]] auto fromGregorianCalendar(const std::chrono::year_month_day &g) {
-  const auto year{static_cast<int>(g.year())};
-  const auto month{static_cast<int>(static_cast<unsigned int>(g.month()))};
-  const auto day{static_cast<int>(static_cast<unsigned int>(g.day()))};
+[[nodiscard]] auto
+fromGregorianCalendar(const std::chrono::year_month_day &date) {
+  const auto year{static_cast<int>(date.year())};
+  const auto month{static_cast<int>(static_cast<unsigned int>(date.month()))};
+  const auto day{static_cast<int>(static_cast<unsigned int>(date.day()))};
   // https://en.wikipedia.org/wiki/Julian_day#Converting_Gregorian_calendar_date_to_Julian_day_number
   // Last retrieved 2026 March 27
   const auto month1{(month - 14) / 12};
@@ -51,7 +51,7 @@ fromCalendar(const std::chrono::year_month_day &date) {
 } // namespace detail
 
 /// A number of Julian days relative to the epoch 4713 BCE
-class julian_day {
+class julian_day_number {
 public:
   /// The data type of the underlying day count.
   using day_type = std::int32_t;
@@ -60,7 +60,7 @@ public:
    * \brief Construct a Julian day from a raw number of days.
    * \param[in] day The number days since start of the Julian epoch.
    */
-  constexpr explicit julian_day(const day_type day = 0) : m_day{day} {}
+  constexpr explicit julian_day_number(const day_type day = 0) : m_day{day} {}
 
   /**
    * \brief Convert a calendar date to the Julian day
@@ -75,7 +75,7 @@ public:
    * - Any date prior to 1 March 4717 BCE. The algorithm simply doesn't work.
    * - The upper limit is not known; I haven't tested to see how high it can go.
    */
-  constexpr explicit julian_day(const std::chrono::year_month_day &date)
+  constexpr explicit julian_day_number(const std::chrono::year_month_day &date)
       : m_day{detail::fromCalendar(date)} {}
 
   /// \return The number of days since the start of the Julian epoch.
@@ -85,11 +85,11 @@ public:
    * \brief Compare two Julian days
    * \return The same result as comparing two integers.
    */
-  constexpr bool operator==(const julian_day &) const noexcept = default;
+  constexpr bool operator==(const julian_day_number &) const noexcept = default;
 
-  /// \copydoc operator==(const julian_day&)
+  /// \copydoc operator==(const julian_day_number&)
   constexpr std::strong_ordering
-  operator<=>(const julian_day &) const noexcept = default;
+  operator<=>(const julian_day_number &) const noexcept = default;
 
   /**
    * \brief Pre-increment this Julian day
@@ -155,33 +155,33 @@ private:
 
 /**
  * \brief Negate a Julian day
- * \param[in] jd Negate this Julian day.
- * \return Effectively, `julian_day{-jd.day()}`
+ * \param[in] n Negate this Julian day.
+ * \return Effectively, `julian_day_number{-n.day()}`
  */
-constexpr julian_day operator-(const julian_day &jd) {
-  return julian_day{-jd.day()};
+constexpr julian_day_number operator-(const julian_day_number &n) {
+  return julian_day_number{-n.day()};
 }
 
 /**
  * \brief Add a number of days to a Julian day
- * \param[in] jd Add days to this Julian day.
- * \param[in] days Add these days to \a jd.
- * \return Effectively \a jd.day() + \a days.count().
+ * \param[in] n Add days to this Julian day.
+ * \param[in] days Add these days to \a n.
+ * \return Effectively \a n.day() + \a days.count().
  */
-constexpr julian_day operator+(const julian_day &jd,
-                               const std::chrono::days &days) {
-  return julian_day(jd.day() + days.count());
+constexpr julian_day_number operator+(const julian_day_number &n,
+                                      const std::chrono::days &days) {
+  return julian_day_number(n.day() + days.count());
 }
 
 /**
  * \brief Subtract a number of days from a Julian day
- * \param[in] jd Subtract days from this Julian day.
- * \param[in] days Subtract these days from \a jd.
- * \return Effectively \a jd.day() - \a days.count().
+ * \param[in] n Subtract days from this Julian day.
+ * \param[in] days Subtract these days from \a n.
+ * \return Effectively \a .day() - \a days.count().
  */
-constexpr julian_day operator-(const julian_day &jd,
-                               const std::chrono::days &days) {
-  return julian_day(jd.day() - days.count());
+constexpr julian_day_number operator-(const julian_day_number &n,
+                                      const std::chrono::days &days) {
+  return julian_day_number(n.day() - days.count());
 }
 
 /**
@@ -190,7 +190,7 @@ constexpr julian_day operator-(const julian_day &jd,
  * \param[in] d Insert this Julian day into a stream.
  * \return A reference to the stream \a s after insert \a d.
  */
-inline std::ostream &operator<<(std::ostream &s, const julian_day d) {
+inline std::ostream &operator<<(std::ostream &s, const julian_day_number d) {
   s << d.day();
   return s;
 }
@@ -199,18 +199,18 @@ namespace literals {
 /**
  * \brief Construct a literal Julian day.
  * \param[in] d The number of days since the start of the Julian epoch.
- * \return The Julian day, as if by `julian_day{d};`
+ * \return The Julian day, as if by `julian_day_number{d};`
  * \note To use this literal operator, you must include
  * `using namespace novas::literals;`.
  * \warning This operator quietly narrows if
- * `d > std::numeric_limits<julian_day::day_type>::max()`.
+ * `d > std::numeric_limits<julian_day_number::day_type>::max()`.
  * \code{.cpp}
  * using namespace novas::literals;
- * constexpr auto jd2000{2'451'544_jd};
+ * constexpr auto d{2'451'544_jdn};
  * \endcode
  */
-constexpr julian_day operator""_jd(unsigned long long d) noexcept {
-  return julian_day(d);
+constexpr julian_day_number operator""_jdn(unsigned long long d) noexcept {
+  return julian_day_number(d);
 }
 } // namespace literals
 
@@ -256,7 +256,7 @@ constexpr julian_day operator""_jd(unsigned long long d) noexcept {
      * const auto epoch{novas::julian_clock::now()};
      *
      * // Set the clock to 2000 January 1
-     * const auto jd2000{novas::julian_clock::set_current_time(2000/1/1)};
+     * const auto d{novas::julian_clock::set_current_time(2000/1/1)};
      * \endcode
      */
     [[nodiscard]] static constexpr auto to_julian_date(
