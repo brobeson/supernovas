@@ -3,6 +3,7 @@
 #include <catch2/generators/catch_generators.hpp>
 
 using namespace novas::literals;
+using namespace std::chrono_literals;
 
 SCENARIO("julian_day meets type requirements", "[unit]") {
   CHECK(std::is_constructible_v<novas::julian_day>);
@@ -174,3 +175,96 @@ SCENARIO("developers can insert julian_days into a stream") {
   s << 2456_jd;
   CHECK(s.str() == "2456");
 }
+
+namespace {
+// In CHECK_THROWS_AS(), the compiler seems to optimize out a lambda; it
+// wouldn't throw the exception. Using a normal function works.
+auto makeInvalidJulianDay(const auto &date) { return novas::julian_day{date}; }
+} // namespace
+
+SCENARIO("developers can convert calendar dates to julian_days") {
+  GIVEN("a calendar date") {
+    const auto [gregorian, expected_julian]{
+        // I used this as the source of truth for date conversion:
+        // https://numerical.recipes/julian.html
+        GENERATE(table<std::chrono::year_month_day, novas::julian_day>(
+            {{2009y / std::chrono::June / 19d, 2'455'002_jd},
+             {2026y / std::chrono::March / 22d, 2'461'122_jd},
+             {1458y / std::chrono::January / 1d, 2253593_jd},
+             // change over from Julian to Gregorian calendars
+             {1582y / std::chrono::October / 15d, 2299161_jd},
+             {1582y / std::chrono::October / 4d, 2299160_jd},
+             // Skip over year 0: go from Dec 31 0001 BC to Jan 1 0001 AD
+             {1y / std::chrono::January / 1d, 1721424_jd},
+             {-1y / std::chrono::December / 31d, 1721423_jd},
+             {-4713y / std::chrono::January / 1d, 0_jd},
+             {-4717y / std::chrono::March / 1d, -1401_jd}}))};
+    CAPTURE(gregorian);
+    WHEN("the Gregorian date is converted to a julian_day") {
+      THEN("the julian_day is correct") {
+        CHECK(novas::julian_day{gregorian} == expected_julian);
+      }
+    }
+  }
+  GIVEN("an invalid calendar date") {
+    const auto date{GENERATE(values({
+        -4717y / std::chrono::February / 28d,
+        0y / std::chrono::January / 1d,
+        1582y / std::chrono::October / 5d,
+        1582y / std::chrono::October / 6d,
+        1582y / std::chrono::October / 7d,
+        1582y / std::chrono::October / 8d,
+        1582y / std::chrono::October / 9d,
+        1582y / std::chrono::October / 10d,
+        1582y / std::chrono::October / 11d,
+        1582y / std::chrono::October / 12d,
+        1582y / std::chrono::October / 13d,
+        1582y / std::chrono::October / 14d,
+    }))};
+    WHEN("a Julian day is created") {
+      THEN("an exception is thrown") {
+        CHECK_THROWS_AS(makeInvalidJulianDay(date), std::invalid_argument);
+      }
+    }
+  }
+}
+
+#if 0
+SCENARIO("The Julian clock can convert Gregorian to Julian", "[unit]")
+{
+  GIVEN("a Gregorian date")
+  {
+    using namespace std::chrono_literals;
+    const auto [gregorian, expected]{
+      GENERATE(table<std::chrono::year_month_day, novas::julian_date>(
+        {{2024y / std::chrono::January / 1d, 0_jd}}))};
+    WHEN("the Julian clock converts to the Julian date")
+    {
+      const auto actual{novas::julian_clock::to_julian_date(gregorian)};
+      THEN("the Julian date is correct")
+      {
+        CHECK(actual == expected);
+      }
+    }
+  }
+}
+
+SCENARIO("The Julian clock can convert Julian to Gregorian", "[unit]")
+{
+  GIVEN("a Julian date")
+  {
+    const auto [julian, expected]{
+      GENERATE(table<novas::julian_date, std::chrono::year_month_day>(
+        {{novas::julian_date{novas::julian_clock::duration{0}},
+          0y / std::chrono::January / 1d}}))};
+    WHEN("the Julian clock converts to the Gregorian date")
+    {
+      const auto actual{novas::julian_clock::to_gregorian_date(julian)};
+      THEN("the Gregorian date is correct")
+      {
+        CHECK(actual == expected);
+      }
+    }
+  }
+}
+#endif
