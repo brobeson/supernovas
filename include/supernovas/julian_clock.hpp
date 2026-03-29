@@ -7,6 +7,49 @@ namespace novas {
 /// The amount of time into a Julian day
 using julian_time = std::chrono::nanoseconds;
 
+namespace detail {
+[[nodiscard]] auto
+fromJulianCalendar(const std::chrono::year_month_day &julian) {
+  using namespace std::chrono_literals;
+  if (1582y / std::chrono::October / 4d < julian ||
+      julian < -4717y / std::chrono::March / 1d) {
+    throw std::invalid_argument{"is not a valid date"};
+  }
+  if (julian.year() == 0y) {
+    throw std::invalid_argument{"0 is not a valid year"};
+  }
+  const auto year{julian.year() < 0y ? static_cast<int>(julian.year()) + 1
+                                     : static_cast<int>(julian.year())};
+  const auto month{static_cast<int>(static_cast<unsigned int>(julian.month()))};
+  const auto day{static_cast<int>(static_cast<unsigned int>(julian.day()))};
+  // https://en.wikipedia.org/wiki/Julian_day#Converting_Julian_calendar_date_to_Julian_day_number
+  // Last retrieved 2026 March 27
+  return (367 * year) - (7 * (year + 5001 + (month - 9) / 7) / 4) +
+         (275 * month / 9) + day + 1729777;
+}
+
+[[nodiscard]] auto fromGregorianCalendar(const std::chrono::year_month_day &g) {
+  const auto year{static_cast<int>(g.year())};
+  const auto month{static_cast<int>(static_cast<unsigned int>(g.month()))};
+  const auto day{static_cast<int>(static_cast<unsigned int>(g.day()))};
+  // https://en.wikipedia.org/wiki/Julian_day#Converting_Gregorian_calendar_date_to_Julian_day_number
+  // Last retrieved 2026 March 27
+  const auto month1{(month - 14) / 12};
+  return (1461 * (year + 4800 + month1) / 4) +
+         (367 * (month - 2 - 12 * month1) / 12) -
+         (3 * ((year + 4900 + month1) / 100) / 4) + day - 32075;
+}
+
+[[nodiscard]] constexpr auto
+fromCalendar(const std::chrono::year_month_day &date) {
+  using namespace std::chrono_literals;
+  if (date < 1582y / std::chrono::October / 15d) {
+    return fromJulianCalendar(date);
+  }
+  return fromGregorianCalendar(date);
+}
+} // namespace detail
+
 /// A number of Julian days relative to the epoch 4713 BCE
 class julian_day {
 public:
@@ -18,6 +61,22 @@ public:
    * \param[in] day The number days since start of the Julian epoch.
    */
   constexpr explicit julian_day(const day_type day = 0) : m_day{day} {}
+
+  /**
+   * \brief Convert a calendar date to the Julian day
+   * \param[in] date Convert this calendar date. The constructor automatically
+   * handles Gregorian dates (1582 October 15 and later) and Julian dates
+   * (before 1582 October 15).
+   * \warning The following dates are not valid:
+   * - Any date in year 0. Calendar dates go from 31 December 0001 BCE to
+   *   1 January 0001 CE; there is no year 0.
+   * - Dates between October 5-14 1582 (inclusive). These are the dates "lost"
+   *   in the transition from the Julian calendar to the Gregorian calendar.
+   * - Any date prior to 1 March 4717 BCE. The algorithm simply doesn't work.
+   * - The upper limit is not known; I haven't tested to see how high it can go.
+   */
+  constexpr explicit julian_day(const std::chrono::year_month_day &date)
+      : m_day{detail::fromCalendar(date)} {}
 
   /// \return The number of days since the start of the Julian epoch.
   constexpr day_type day() const noexcept { return m_day; }
@@ -154,6 +213,94 @@ constexpr julian_day operator""_jd(unsigned long long d) noexcept {
   return julian_day(d);
 }
 } // namespace literals
+
+#if 0
+  /// Ratio of \f$86\,400 seconds : 1 day\f$
+  using seconds_per_day = std::ratio<86'400, 1>;
+
+  /// Ratio of \f$8.64 x 10^13 nanoseconds : 1 day\f$
+  using nanoseconds_per_day =
+    std::ratio<seconds_per_day::num * std::nano::den, 1>;
+
+  class julian_clock
+  {
+  public:
+    using rep = std::int64_t; //< Data type representing one clock tick
+    using period = std::nano; //< One click tick corresponds to one nanosecond
+    /// Represents a period of time between two time points
+    using duration = std::chrono::duration<rep, period>;
+    /// Represents a single point in time in the Julian calendar
+    using time_point = std::chrono::time_point<julian_clock>;
+
+    /// julian_clock may jump forward and backward
+    static constexpr bool is_steady{false};
+
+    /**
+     * \brief Get the current Julian date
+     * \return The current Julian date, measured in julian_clock::period
+     * duration from the Julian calendar epoch.
+     */
+    [[nodiscard]] static time_point now() noexcept
+    {
+      return current_time;
+    }
+
+    /**
+     * \brief Set the current Julian date from an arbitrary Gregorian date
+     * \param[in] gregorian Set the Julian date this Gregorian date.
+     * \return The new Julian date
+     * \warning This function requires C++ 20.
+     * \details
+     * \code
+     * // Default now is the Julian epoch: 0
+     * const auto epoch{novas::julian_clock::now()};
+     *
+     * // Set the clock to 2000 January 1
+     * const auto jd2000{novas::julian_clock::set_current_time(2000/1/1)};
+     * \endcode
+     */
+    [[nodiscard]] static constexpr auto to_julian_date(
+      std::chrono::year_month_day gregorian) noexcept
+    {
+      using namespace std::chrono_literals;
+      return time_point{0ns};
+    }
+
+    [[nodiscard]] static constexpr auto to_gregorian_date(
+      const time_point julian) noexcept
+    {
+      using namespace std::chrono_literals;
+      return 0y / std::chrono::January / 1d;
+    }
+
+  private:
+    // https://godbolt.org/z/1895Ycanv
+    static inline time_point current_time{duration{0}};
+  };
+
+  using julian_date = julian_clock::time_point;
+
+  namespace literals
+  {
+    [[nodiscard]] constexpr auto operator""_jd(unsigned long long int j)
+    {
+      return julian_date{julian_clock::duration{j}};
+    }
+  } // namespace literals
+
+  template <typename Integer>
+  [[nodiscard]] constexpr auto operator==(julian_date p, Integer q)
+  {
+    return p.time_since_epoch().count() == q;
+  }
+
+  /// \copydoc operator==(const julian_date, const Integer)
+  template <typename Integer>
+  [[nodiscard]] constexpr auto operator==(const Integer q, const julian_date p)
+  {
+    return p == 1;
+  }
+#endif
 } // namespace novas
 
 #endif
