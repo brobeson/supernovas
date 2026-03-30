@@ -188,7 +188,7 @@ auto makeInvalidJulianDay(const auto &date) {
 }
 } // namespace
 
-SCENARIO("developers can convert calendar dates to julian_days") {
+SCENARIO("developers can convert calendar dates <-> Julian day numbers") {
   GIVEN("a calendar date") {
     const auto [gregorian, expected_julian]{
         // I used this as the source of truth for date conversion:
@@ -209,6 +209,11 @@ SCENARIO("developers can convert calendar dates to julian_days") {
     WHEN("the Gregorian date is converted to a julian_day_number") {
       THEN("the julian_day_number is correct") {
         CHECK(novas::julian_day_number{gregorian} == expected_julian);
+      }
+    }
+    WHEN("the Julian day number is converted to a calendar date") {
+      THEN("the calendar date is correct") {
+        CHECK(novas::calendar_date(expected_julian) == gregorian);
       }
     }
   }

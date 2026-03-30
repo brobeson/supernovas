@@ -154,6 +154,36 @@ private:
 };
 
 /**
+ * \brief Convert a Julian day number to the calendar date
+ * \param[in] jdn Convert this Julian day number.
+ * \return The calendar date of \a jdn.
+ */
+constexpr auto calendar_date(const julian_day_number &jdn) {
+  // From Practical Astronomy with Your Calculator or Spreadsheet by Peter
+  // Duffett-Smith and Jonathan Zwart (4th Edition)
+  // cspell:ignore Duffett Zwart
+  const auto day{jdn.day() + 0.5};
+  const auto I{static_cast<int>(day)};
+  const auto F{day - I};
+  auto B{I};
+  if (I > 2299160) {
+    const auto A{static_cast<int>((I - 1867216.25) / 36524.25)};
+    B = I + A - A / 4 + 1;
+  }
+  const auto C{B + 1524};
+  const auto D{static_cast<int>((C - 122.1) / 365.25)};
+  const auto E{static_cast<int>(365.25 * D)};
+  const auto G{static_cast<int>((C - E) / 30.6001)};
+  const auto d{C - E + F - static_cast<int>(30.6001 * G)};
+  const auto m{G < 13.5 ? G - 1 : G - 13};
+  const auto y{m > 2.5 ? D - 4716 : D - 4715};
+  // Smith and Zwart has a bug for JDNs BCE. The math above calculates a year 0
+  // which does not exist, so all non-positive years are off by 1.
+  return std::chrono::year{y > 0 ? y : y - 1} / std::chrono::month(m) /
+         std::chrono::day(d);
+}
+
+/**
  * \brief Negate a Julian day
  * \param[in] n Negate this Julian day.
  * \return Effectively, `julian_day_number{-n.day()}`
