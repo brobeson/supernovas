@@ -244,6 +244,55 @@ constexpr julian_day_number operator""_jdn(unsigned long long d) noexcept {
 }
 } // namespace literals
 
+namespace detail {
+// Ensure the time is in the range [0, 1-day); adjust the day to account for
+// any change in time.
+constexpr void correctDayAndTime(julian_day_number &day, julian_time &time) {
+  using namespace std::chrono_literals;
+  constexpr auto nsPerDay{86400000000000ns};
+  if (time < 0ns) {
+    time -= nsPerDay;
+    const auto days{std::chrono::duration_cast<std::chrono::days>(time)};
+    day += days;
+    time = time - std::chrono::duration_cast<std::chrono::nanoseconds>(days) +
+           nsPerDay;
+  } else if (time >= nsPerDay) {
+    const auto days{std::chrono::duration_cast<std::chrono::days>(time)};
+    day += days;
+    time -= std::chrono::duration_cast<std::chrono::nanoseconds>(days);
+  }
+}
+} // namespace detail
+
+class julian_date {
+public:
+  /**
+   * \brief Construct a Julian date
+   * \param[in] day Construct the Julian date for this Julian day number.
+   * \param[in] time The time into the Julian date.
+   * \details This constructor appropriately wraps \a time less than 0 and
+   * \a time greater than or equal to one day. For example,
+   * `julian_date d{0_jdn, -20ns}` results in `d.day() == -1_jdn` and
+   * `d.time() == 1d - 2ns`.
+   */
+  constexpr explicit julian_date(
+      const julian_day_number &day = julian_day_number{0},
+      const julian_time &time = julian_time{0})
+      : m_day{day}, m_time{time} {
+    detail::correctDayAndTime(m_day, m_time);
+  }
+
+  /// \return The Julian day number for this Julian date.
+  [[nodiscard]] constexpr auto day() const noexcept { return m_day; }
+
+  /// \return The time within the \a day().
+  [[nodiscard]] constexpr auto time() const noexcept { return m_time; }
+
+private:
+  julian_day_number m_day;
+  julian_time m_time;
+};
+
 #if 0
   /// Ratio of \f$86\,400 seconds : 1 day\f$
   using seconds_per_day = std::ratio<86'400, 1>;
