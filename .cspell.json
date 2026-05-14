@@ -3,5 +3,5 @@
   "enableGlobDot": true,
   "dictionaries": ["cpp-refined"],
   "ignorePaths": [".git", "CPM.cmake"],
-  "words": ["brobeson"]
+  "words": ["brobeson", "copybrief"]
 }

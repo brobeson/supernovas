@@ -245,22 +245,30 @@ constexpr julian_day_number operator""_jdn(unsigned long long d) noexcept {
 } // namespace literals
 
 namespace detail {
+constexpr std::chrono::nanoseconds ns_per_day{86400000000000};
+
 // Ensure the time is in the range [0, 1-day); adjust the day to account for
 // any change in time.
 constexpr void correctDayAndTime(julian_day_number &day, julian_time &time) {
   using namespace std::chrono_literals;
-  constexpr auto nsPerDay{86400000000000ns};
   if (time < 0ns) {
-    time -= nsPerDay;
+    time -= ns_per_day;
     const auto days{std::chrono::duration_cast<std::chrono::days>(time)};
     day += days;
     time = time - std::chrono::duration_cast<std::chrono::nanoseconds>(days) +
-           nsPerDay;
-  } else if (time >= nsPerDay) {
+           ns_per_day;
+  } else if (time >= ns_per_day) {
     const auto days{std::chrono::duration_cast<std::chrono::days>(time)};
     day += days;
     time -= std::chrono::duration_cast<std::chrono::nanoseconds>(days);
   }
+}
+
+constexpr auto day_fraction_to_duration(const long double date) {
+  const auto fraction{date - static_cast<long long int>(date)};
+  const auto nanos{ns_per_day.count() * fraction};
+  return std::chrono::nanoseconds{
+      static_cast<std::chrono::nanoseconds::rep>(nanos)};
 }
 } // namespace detail
 
@@ -282,6 +290,16 @@ public:
     detail::correctDayAndTime(m_day, m_time);
   }
 
+  /**
+   * \copybrief julian_date(const julian_day_number&, const julian_time&)
+   * \param[in] date The Julian date. The integer portion is the \a day(). The
+   * fractional portion is the \a time().
+   */
+  constexpr explicit julian_date(const long double date)
+      : julian_date{
+            julian_day_number{static_cast<julian_day_number::day_type>(date)},
+            detail::day_fraction_to_duration(date)} {}
+
   /// \return The Julian day number for this Julian date.
   [[nodiscard]] constexpr auto day() const noexcept { return m_day; }
 
@@ -293,6 +311,23 @@ private:
   julian_time m_time;
 };
 
+
+namespace literals {
+/**
+ * \brief Construct a literal Julian date.
+ * \param[in] d The number of days since the start of the Julian epoch.
+ * \return The Julian date.
+ * \note To use this literal operator, you must include
+ * `using namespace novas::literals;`.
+ * \code{.cpp}
+ * using namespace novas::literals;
+ * constexpr auto d{2'451'544.0563_jd};
+ * \endcode
+ */
+constexpr julian_date operator""_jd(long double date) noexcept {
+  return julian_date{date};
+}
+} // namespace literals
 #if 0
   /// Ratio of \f$86\,400 seconds : 1 day\f$
   using seconds_per_day = std::ratio<86'400, 1>;

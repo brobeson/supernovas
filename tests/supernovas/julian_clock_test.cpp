@@ -139,7 +139,7 @@ SCENARIO("developers can compare two julian_days") {
   // Let the compiler generate the comparison operators, but keep this test
   // in case changes to the class cause the compiler to generate unexpected
   // comparisons.
-  GIVEN("two julian_day_number") {
+  GIVEN("two julian_day_numbers") {
     const auto [a, b, expected_equal, expected_unequal, expected_less,
                 expected_less_equal, expected_greater, expected_greater_equal]{
         GENERATE(table<novas::julian_day_number, novas::julian_day_number, bool,
