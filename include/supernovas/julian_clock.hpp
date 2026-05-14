@@ -306,6 +306,21 @@ public:
   /// \return The time within the \a day().
   [[nodiscard]] constexpr auto time() const noexcept { return m_time; }
 
+  /**
+   * \brief Compare two Julian dates
+   * \retval true The days and times are equal.
+   * \retval false The days or times are not equal.
+   */
+  constexpr bool operator==(const julian_date &) const noexcept = default;
+
+  /**
+   * \brief Compare two Julian dates for ordering
+   * \details Julian dates are ordered by Julian day first, and time if the
+   * day numbers are equal.
+   */
+  constexpr std::strong_ordering
+  operator<=>(const julian_date &) const noexcept = default;
+
 private:
   julian_day_number m_day;
   julian_time m_time;
