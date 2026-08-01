@@ -123,3 +123,30 @@ SCENARIO("developers can compare two julian_dates", "[unit][julian_date]") {
     }
   }
 }
+
+SCENARIO("developers can negate a julian_date", "[unit][julian_date]") {
+  GIVEN("a julian_date") {
+    using namespace novas::literals;
+    using namespace std::chrono_literals;
+    // const auto d{1.0_jd};
+    const auto [original, expected_day, expected_time]{
+        GENERATE(table<novas::julian_date, novas::julian_day_number::day_type,
+                       novas::julian_time>({
+            // {0.0_jd, 0, 0ns},
+            {0.5_jd, 0, -43200000000000ns},
+            // {1.0_jd, -1, 0ns},
+            // {1.5_jd, -1, 43200000000000ns},
+            // {novas::julian_date{-0.5}, 0, 43200000000000ns},
+            // {novas::julian_date{-1.0}, -1, 0ns},
+            // {novas::julian_date{-1.5}, 1, 43200000000000ns},
+        }))};
+    CAPTURE(original);
+    WHEN("the date is negated") {
+      const auto actual{-original};
+      THEN("the new date is correct") {
+        CHECK(actual.day().day() == expected_day);
+        CHECK(actual.time() == expected_time);
+      }
+    }
+  }
+}

@@ -321,11 +321,33 @@ public:
   constexpr std::strong_ordering
   operator<=>(const julian_date &) const noexcept = default;
 
+  // template <typename Float> Float as() {
+  //   static_assert(
+  //       std::is_floating_point_v<Float>,
+  //       "julian_date::as() can only convert to a floating point type");
+  //   return static_cast<Float>(m_day) +
+  //          static_cast<Float>(m_time.count()) / julian_time::period::den;
+  // }
+
 private:
   julian_day_number m_day;
   julian_time m_time;
 };
 
+std::ostream &operator<<(std::ostream &s, const julian_date &j) {
+  s << j.day() << ' ' << j.time().count();
+  return s;
+}
+
+constexpr auto operator-(const julian_date &j) {
+  if (j.day().day() == 0) {
+    if (j.time().count() == 0) {
+      return j;
+    }
+    return julian_date{j.day(), -j.time()};
+  }
+  return julian_date{-j.day(), j.time()};
+}
 
 namespace literals {
 /**
@@ -343,6 +365,7 @@ constexpr julian_date operator""_jd(long double date) noexcept {
   return julian_date{date};
 }
 } // namespace literals
+
 #if 0
   /// Ratio of \f$86\,400 seconds : 1 day\f$
   using seconds_per_day = std::ratio<86'400, 1>;
