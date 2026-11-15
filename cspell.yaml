@@ -1,6 +1,6 @@
 dictionaries: [cpp]
 enableGlobDot: true
-ignorePaths: [.git/]
+ignorePaths: [.git/, CPM.cmake]
 useGitIgnore: true
 version: 0.2
 words: [brobeson]

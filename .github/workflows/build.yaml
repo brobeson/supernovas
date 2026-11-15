@@ -1,3 +1,5 @@
+# cspell:dictionaries bash
+
 name: Build & Test
 on:
   workflow_dispatch:
@@ -15,7 +17,44 @@ jobs:
   projectFiles:
     name: Project Files
     uses: brobeson/SupportFileQuality/.github/workflows/support_files.yaml@v1
-  # build:
-  #   name: C++
-  #   # uses: brobeson/brobeson/.github/workflows/cpp.yaml@reusable_workflows
-  #   uses: brobeson/CppWorkflow/.github/workflows/build_all_the_things.yaml@v1
+  cpp:
+    name: C++ Quality
+    strategy:
+      matrix:
+        os: [ubuntu-26.04, windows-2025-vs2026, macos-26-intel]
+        workflow: [debug, release]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v7
+      - name: C++ Formatting
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        shell: bash --noprofile --norc -O globstar -eo pipefail {0}
+        # cspell:ignore Werror
+        run: clang-format -Werror --dry-run --style=file **/*.[ch]pp
+      # - name: Install Dependencies on Windows
+      #   if: ${{ startsWith(matrix.os, 'windows') }}
+      #   run: vcpkg install catch2
+      #   env:
+      #     VCPKG_MAX_CONCURRENCY: 4
+      # - name: Install Dependencies on MacOS
+      #   if: ${{ startsWith(matrix.os, 'macos') }}
+      #   run: brew install catch2
+      # - name: Install Dependencies on Ubuntu
+      #   if: ${{ startsWith(matrix.os, 'ubuntu') }}
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install catch2 --yes
+      - name: CMake Workflow
+        env:
+          # cspell:ignore buildsystems
+          CMAKE_GENERATOR: ${{ !startsWith(matrix.os, 'windows') && 'Ninja' || '' }}
+          CXX: ${{ startsWith(matrix.os, 'ubuntu') && 'clang++' || '' }}
+          CC: ${{ startsWith(matrix.os, 'ubuntu') && 'clang' || '' }}
+        run: cmake --workflow ${{ matrix.workflow }}
+      # - name: Cppcheck # cspell:ignore Cppcheck
+      #   if: ${{ startsWith(matrix.os, 'ubuntu') }}
+      #   run: cppcheck --version
+      - name: Clang Tidy
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: run-clang-tidy -j $(nproc) -p build/${{ matrix.workflow }} -extra-arg=-Wno-unknown-warning-option

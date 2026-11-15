@@ -6,7 +6,7 @@ project(
   HOMEPAGE_URL https://github.com/brobeson/supernovas
   LANGUAGES CXX
 )
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+# list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/MP>")
 # add_subdirectory(include)
@@ -16,7 +16,7 @@ option(
   "Build the supernovas tests. Default: ${PROJECT_IS_TOP_LEVEL}. Values: { ON, OFF }."
   ${PROJECT_IS_TOP_LEVEL}
 )
+enable_testing()
 if(SUPERNOVAS_BUILD_TESTS)
-  enable_testing()
   add_subdirectory(tests/supernovas)
 endif()

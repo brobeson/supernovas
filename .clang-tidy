@@ -1,3 +1,4 @@
+# cspell:ignore altera llvmlibc
 ---
 Checks: "*,-altera-*,-fuchsia-*,-llvm-header-guard,-llvm-include-order,-llvmlibc-*,-readability-identifier-length"
 WarningsAsErrors: "*"
