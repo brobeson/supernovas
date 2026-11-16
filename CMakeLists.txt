@@ -11,12 +11,17 @@ project(
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/MP>")
 # add_subdirectory(include)
 
+enable_testing()
 option(
   SUPERNOVAS_BUILD_TESTS
-  "Build the supernovas tests. Default: ${PROJECT_IS_TOP_LEVEL}. Values: { ON, OFF }."
+  "Build the supernovas tests. Default: ${PROJECT_IS_TOP_LEVEL}. Values: {on, off}."
   ${PROJECT_IS_TOP_LEVEL}
 )
-enable_testing()
 if(SUPERNOVAS_BUILD_TESTS)
   add_subdirectory(tests/supernovas)
 endif()
+
+# Configure the Cppcheck project file. This is benign for users who do not
+# want to us Cppcheck, so don't control it with an option.
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/cppcheck")
+configure_file(project.cppcheck.in project.cppcheck)

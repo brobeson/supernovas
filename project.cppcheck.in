@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1">
+    <builddir>${CMAKE_CURRENT_BINARY_DIR}/cppcheck</builddir>
+    <platform>native</platform>
+    <!-- cspell:ignore importproject -->
+    <importproject>${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json</importproject>
+    <analyze-all-vs-configs>false</analyze-all-vs-configs>
+    <check-headers>true</check-headers>
+    <check-unused-templates>true</check-unused-templates>
+    <inline-suppression>false</inline-suppression>
+    <max-ctu-depth>2</max-ctu-depth>
+    <max-template-recursion>100</max-template-recursion>
+    <suppressions>
+        <suppression>unusedFunction</suppression>
+        <suppression>missingIncludeSystem</suppression>
+        <suppression>checkersReport</suppression>
+    </suppressions>
+    <safe-checks>
+        <class-public />
+    </safe-checks>
+    <check-level-exhaustive />
+    <project-name>cppcheck</project-name>
+</project>

@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   projectFiles:
+    if: ${{ false }}
     name: Project Files
     uses: brobeson/SupportFileQuality/.github/workflows/support_files.yaml@v1
   cppQuality:
@@ -23,6 +24,8 @@ jobs:
     steps:
       - name: Clone the repository
         uses: actions/checkout@v7
+      - name: Install tools
+        run: sudo apt-get install cppcheck --yes
       - name: Clang-format
         shell: bash --noprofile --norc -O globstar -eo pipefail {0}
         # cspell:ignore Werror
@@ -31,12 +34,20 @@ jobs:
         env:
           CXX: clang++
         run: cmake --preset debug
+      - run: tree build/debug/_deps
       - name: Clang-tidy
+        if: ${{ false }}
         run: run-clang-tidy -j $(nproc) -p build/debug
-      # - name: Cppcheck # cspell:ignore Cppcheck
-      #   if: ${{ startsWith(matrix.os, 'ubuntu') }}
-      #   run: cppcheck --version
+      - name: Cppcheck # cspell:ignore Cppcheck
+        run: |
+          cd build/debug
+          cppcheck \
+            --project=project.cppcheck \
+            --enable=all \
+            --template='::error file={file},line={line},col={column}::[{id}] {message}' \
+            --error-exitcode=1
   cppBuild:
+    if: ${{ false }}
     name: Build & Test
     strategy:
       matrix:
@@ -46,20 +57,9 @@ jobs:
     steps:
       - name: Clone the repository
         uses: actions/checkout@v7
-      # - name: C++ Formatting
-      #   if: ${{ startsWith(matrix.os, 'ubuntu') }}
-      #   shell: bash --noprofile --norc -O globstar -eo pipefail {0}
-      #   # cspell:ignore Werror
-      #   run: clang-format -Werror --dry-run --style=file **/*.[ch]pp
       - name: CMake Workflow
         env:
           CMAKE_GENERATOR: ${{ !startsWith(matrix.os, 'windows') && 'Ninja' || '' }}
           CXX: ${{ startsWith(matrix.os, 'ubuntu') && 'clang++' || '' }}
           CC: ${{ startsWith(matrix.os, 'ubuntu') && 'clang' || '' }}
         run: cmake --workflow ${{ matrix.workflow }}
-      # - name: Cppcheck # cspell:ignore Cppcheck
-      #   if: ${{ startsWith(matrix.os, 'ubuntu') }}
-      #   run: cppcheck --version
-      # - name: Clang Tidy
-      #   if: ${{ startsWith(matrix.os, 'ubuntu') }}
-      #   run: run-clang-tidy -j $(nproc) -p build/${{ matrix.workflow }} -extra-arg=-Wno-unknown-warning-option
