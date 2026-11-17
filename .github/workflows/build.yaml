@@ -36,7 +36,6 @@ jobs:
         run: cmake --preset debug
       - run: tree build/debug/_deps
       - name: Clang-tidy
-        if: ${{ false }}
         run: run-clang-tidy -j $(nproc) -p build/debug
       - name: Cppcheck # cspell:ignore Cppcheck
         run: |
