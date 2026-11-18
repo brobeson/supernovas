@@ -1,16 +1,14 @@
 #include <catch2/catch_test_macros.hpp>
 
-/*
 namespace
 {
-  class vec
+  bool foo()
   {
-    float x, y, z;
-  };
+    return true;
+  }
 } // namespace
-*/
 
 SCENARIO("This test proves out the GH Actions workflow for C++")
 {
-  CHECK(true);
+  CHECK(foo());
 }
