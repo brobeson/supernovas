@@ -25,14 +25,23 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v7
       - name: Install tools
-        # cspell:ignore sarif
+        # cspell:ignore sarif pipx
         run: |
           sudo apt-get install cppcheck --yes --no-install-recommends
+          pipx install lizard
         # cargo install clang-tidy-sarif
       - name: Clang-format
         shell: bash --noprofile --norc -O globstar -eo pipefail {0}
         # cspell:ignore Werror
         run: clang-format -Werror --dry-run --style=file **/*.[ch]pp
+      - name: Lizard
+        run: >
+          lizard
+          --Threshold nloc=50
+          --Threshold cyclomatic_complexity=10
+          --Threshold parameter_count=5
+          --warnings_only
+          --modified
       - name: CMake configure
         env:
           CXX: clang++
