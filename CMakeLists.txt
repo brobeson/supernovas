@@ -6,17 +6,26 @@ project(
   HOMEPAGE_URL https://github.com/brobeson/supernovas
   LANGUAGES CXX
 )
+
+option(
+  SUPERNOVAS_BUILD_TESTS
+  "Build the supernovas tests. Default: ${PROJECT_IS_TOP_LEVEL}. Values: {on, off}."
+  ${PROJECT_IS_TOP_LEVEL}
+)
+option(
+  SUPERNOVAS_BUILD_COVERAGE
+  "Instrument the code to measure test coverage. Default: off. Values: {on, off}."
+  on
+)
+add_compile_options(--coverage)
+add_link_options(--coverage)
+
 # list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/MP>")
 # add_subdirectory(include)
 
 enable_testing()
-option(
-  SUPERNOVAS_BUILD_TESTS
-  "Build the supernovas tests. Default: ${PROJECT_IS_TOP_LEVEL}. Values: {on, off}."
-  ${PROJECT_IS_TOP_LEVEL}
-)
 if(SUPERNOVAS_BUILD_TESTS)
   add_subdirectory(tests/supernovas)
 endif()
@@ -25,3 +34,5 @@ endif()
 # want to us Cppcheck, so don't control it with an option.
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/cppcheck")
 configure_file(project.cppcheck.in project.cppcheck)
+
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/coverage")

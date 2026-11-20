@@ -19,7 +19,8 @@ jobs:
     name: Project Files
     uses: brobeson/SupportFileQuality/.github/workflows/support_files.yaml@v1
   cppQuality:
-    name: C++ Quality
+    if: ${{ false }}
+    name: C++ Analysis
     runs-on: ubuntu-26.04
     steps:
       - name: Clone the repository
@@ -62,7 +63,6 @@ jobs:
             --template='::error file={file},line={line},col={column}::[{id}] {message}' \
             --error-exitcode=1
   cppBuild:
-    if: ${{ false }}
     name: Build & Test
     strategy:
       matrix:
@@ -78,3 +78,14 @@ jobs:
           CXX: ${{ startsWith(matrix.os, 'ubuntu') && 'clang++' || '' }}
           CC: ${{ startsWith(matrix.os, 'ubuntu') && 'clang' || '' }}
         run: cmake --workflow ${{ matrix.workflow }}
+      - name: Test coverage
+        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.workflow == 'debug' }}
+        # cspell:ignore gcovr
+        run: |
+          pipx install gcovr
+          cd build/${{ matrix.workflow }}
+          gcovr --root .. .
+      - name: Coverage report
+        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.workflow == 'debug' }}
+        # cspell:ignore coverallsapp
+        uses: coverallsapp/github-action@v2

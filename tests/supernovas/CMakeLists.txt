@@ -5,4 +5,9 @@ include("${Catch2_SOURCE_DIR}/extras/Catch.cmake")
 
 add_executable(sample_test sample_test.cpp)
 target_link_libraries(sample_test PRIVATE Catch2::Catch2WithMain)
+# target_compile_options(
+#   sample_test
+#   PRIVATE
+#     $<$<BOOL:${SUPERNOVAS_BUILD_COVERAGE}>:-fno-default-inline -fno-inline --coverage -fprofile-abs-path>
+# )
 catch_discover_tests(sample_test PROPERTIES LABELS unit)
