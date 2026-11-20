@@ -1,2 +1,4 @@
 # Default build directory when using CMake presets in VS Code
 build/
+
+coverage/

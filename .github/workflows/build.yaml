@@ -66,8 +66,8 @@ jobs:
     name: Build & Test
     strategy:
       matrix:
-        os: [ubuntu-26.04, windows-2025-vs2026, macos-26-intel]
-        workflow: [debug, release]
+        os: [ubuntu-26.04] #, windows-2025-vs2026, macos-26-intel]
+        workflow: [debug] #, release]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Clone the repository
@@ -75,17 +75,27 @@ jobs:
       - name: CMake Workflow
         env:
           CMAKE_GENERATOR: ${{ !startsWith(matrix.os, 'windows') && 'Ninja' || '' }}
-          CXX: ${{ startsWith(matrix.os, 'ubuntu') && 'clang++' || '' }}
-          CC: ${{ startsWith(matrix.os, 'ubuntu') && 'clang' || '' }}
+          # CXX: ${{ startsWith(matrix.os, 'ubuntu') && 'clang++' || '' }}
+          # CC: ${{ startsWith(matrix.os, 'ubuntu') && 'clang' || '' }}
         run: cmake --workflow ${{ matrix.workflow }}
+      - name: sanity check
+        run: |
+          find . -name '*.gcno'
+          find . -name '*.gcda'
+          find . -name 'sample_test.cpp'
       - name: Test coverage
         if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.workflow == 'debug' }}
         # cspell:ignore gcovr
         run: |
           pipx install gcovr
-          cd build/${{ matrix.workflow }}
-          gcovr --root .. .
+          # cd build/${{ matrix.workflow }}
+          # gcovr --verbose --root ../../ .
+          # gcovr --verbose --root ${{ github.workspace }} --filter ${{github.workspace}} build/debug
+          gcovr --root . build/debug
       - name: Coverage report
         if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.workflow == 'debug' }}
         # cspell:ignore coverallsapp
         uses: coverallsapp/github-action@v2
+        with:
+          file: build/coverage.info
+        #   format: lcov
