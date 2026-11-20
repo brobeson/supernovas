@@ -78,14 +78,22 @@ jobs:
           CXX: ${{ startsWith(matrix.os, 'ubuntu') && 'clang++' || '' }}
           CC: ${{ startsWith(matrix.os, 'ubuntu') && 'clang' || '' }}
         run: cmake --workflow ${{ matrix.workflow }}
+      # - name: sanity check
+      #   run: |
+      #     find . -name '*.gcno'
+      #     find . -name '*.gcda'
       - name: Test coverage
         if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.workflow == 'debug' }}
         # cspell:ignore gcovr
         run: |
           pipx install gcovr
-          cd build/${{ matrix.workflow }}
-          gcovr --root .. .
+          # cd build/${{ matrix.workflow }}
+          # gcovr --verbose --root ../../ .
+          gcovr --verbose --root ${{ github.workspace }} --filter ${{github.workspace}} build/debug
       - name: Coverage report
         if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.workflow == 'debug' }}
         # cspell:ignore coverallsapp
         uses: coverallsapp/github-action@v2
+        # with:
+        #   file: coverage.info
+        #   format: lcov

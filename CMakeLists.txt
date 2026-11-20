@@ -17,13 +17,8 @@ option(
   "Instrument the code to measure test coverage. Default: off. Values: {on, off}."
   on
 )
-add_compile_options(--coverage)
-add_link_options(--coverage)
-
-# list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/MP>")
-# add_subdirectory(include)
 
 enable_testing()
 if(SUPERNOVAS_BUILD_TESTS)
