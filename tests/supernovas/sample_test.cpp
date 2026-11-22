@@ -4,3 +4,8 @@ SCENARIO("This test proves out the GH Actions workflow for C++")
 {
   CHECK(true);
 }
+
+SCENARIO("This is a second test for coverage experiments")
+{
+  CHECK(true);
+}

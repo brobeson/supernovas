@@ -17,6 +17,15 @@ option(
   "Instrument the code to measure test coverage. Default: off. Values: {on, off}."
   on
 )
+if(SUPERNOVAS_BUILD_COVERAGE)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
+    add_link_options(-fprofile-instr-generate)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    add_compile_options(--coverage)
+    add_link_options(--coverage)
+  endif()
+endif()
 
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/MP>")
 

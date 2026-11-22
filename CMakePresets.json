@@ -25,7 +25,8 @@
       "description": "Configure a debug build.",
       "inherits": "default",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "SUPERNOVAS_BUILD_COVERAGE": true
       }
     }
   ],
@@ -51,6 +52,9 @@
       "hidden": true,
       "output": {
         "outputOnFailure": true
+      },
+      "environment": {
+        "LLVM_PROFILE_FILE": "profiles/cov-%m-%p.profraw"
       }
     },
     {

@@ -75,23 +75,30 @@ jobs:
       - name: CMake Workflow
         env:
           CMAKE_GENERATOR: ${{ !startsWith(matrix.os, 'windows') && 'Ninja' || '' }}
-          # CXX: ${{ startsWith(matrix.os, 'ubuntu') && 'clang++' || '' }}
-          # CC: ${{ startsWith(matrix.os, 'ubuntu') && 'clang' || '' }}
+          CXX: ${{ startsWith(matrix.os, 'ubuntu') && 'clang++' || '' }}
+          CC: ${{ startsWith(matrix.os, 'ubuntu') && 'clang' || '' }}
         run: cmake --workflow ${{ matrix.workflow }}
       - name: sanity check
         run: |
           find . -name '*.gcno'
           find . -name '*.gcda'
           find . -name 'sample_test.cpp'
-      - name: Test coverage
-        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.workflow == 'debug' }}
-        # cspell:ignore gcovr
+          find . -name '*.profraw'
+      # - name: Test coverage
+      #   if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.workflow == 'debug' }}
+      #   # cspell:ignore gcovr
+      #   run: |
+      #     pipx install gcovr
+      #     # cd build/${{ matrix.workflow }}
+      #     # gcovr --verbose --root ../../ .
+      #     # gcovr --verbose --root ${{ github.workspace }} --filter ${{github.workspace}} build/debug
+      #     gcovr --root . build/debug
+      - name: Test Coverage (LLVM)
+        shell: bash --noprofile --norc -O globstar -eo pipefail {0}
         run: |
-          pipx install gcovr
-          # cd build/${{ matrix.workflow }}
-          # gcovr --verbose --root ../../ .
-          # gcovr --verbose --root ${{ github.workspace }} --filter ${{github.workspace}} build/debug
-          gcovr --root . build/debug
+          sudo apt install llvm
+          llvm-profdata merge -sparse build/debug/**/*.profraw -o coverage.profdata
+          llvm-cov export build/debug/tests/supernovas/sample_test -instr-profile=coverage.profdata -ignore-filename-regex='build/.*' -format=lcov >build/coverage.info
       - name: Coverage report
         if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.workflow == 'debug' }}
         # cspell:ignore coverallsapp
