@@ -11,7 +11,6 @@
     <max-ctu-depth>2</max-ctu-depth>
     <max-template-recursion>100</max-template-recursion>
     <suppressions>
-        <suppression>unusedFunction</suppression>
         <suppression>missingIncludeSystem</suppression>
         <suppression>checkersReport</suppression>
     </suppressions>

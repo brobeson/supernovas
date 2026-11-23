@@ -15,47 +15,37 @@ concurrency:
 
 jobs:
   projectFiles:
-    if: ${{ false }}
     name: Project Files
     uses: brobeson/SupportFileQuality/.github/workflows/support_files.yaml@v1
   cppQuality:
-    if: ${{ false }}
     name: C++ Analysis
     runs-on: ubuntu-26.04
+    defaults:
+      run:
+        shell: bash --noprofile --norc -O globstar -eo pipefail {0}
     steps:
       - name: Clone the repository
         uses: actions/checkout@v7
-      - name: Install tools
-        # cspell:ignore sarif pipx
-        run: |
-          sudo apt-get install cppcheck --yes --no-install-recommends
-          pipx install lizard
-        # cargo install clang-tidy-sarif
-      - name: Clang-format
-        shell: bash --noprofile --norc -O globstar -eo pipefail {0}
-        # cspell:ignore Werror
+      - name: Clang-format # cspell:ignore Werror
         run: clang-format -Werror --dry-run --style=file **/*.[ch]pp
-      - name: Lizard
-        run: >
-          lizard
-          --Threshold nloc=50
-          --Threshold cyclomatic_complexity=10
-          --Threshold parameter_count=5
-          --warnings_only
-          --modified
+      - name: Lizard # cspell:ignore nloc pipx
+        run: |
+          pipx install lizard
+          lizard \
+            --Threshold nloc=50 \
+            --Threshold cyclomatic_complexity=10 \
+            --Threshold parameter_count=5 \
+            --warnings_only \
+            --modified \
       - name: CMake configure
         env:
           CXX: clang++
         run: cmake --preset debug
       - name: Clang-tidy
         run: run-clang-tidy -j $(nproc) -p build/debug
-        # run: run-clang-tidy -j $(nproc) -p build/debug | clang-tidy-sarif >clang-tidy.sarif
-      # - name: Upload SARIF
-      #   uses: github/codeql-action/upload-sarif@v4
-      #   with:
-      #     sarif_file: clang-tidy.sarif
       - name: Cppcheck # cspell:ignore Cppcheck
         run: |
+          sudo apt-get install cppcheck --yes --no-install-recommends
           cd build/debug
           cppcheck \
             --project=project.cppcheck \
@@ -66,8 +56,8 @@ jobs:
     name: Build & Test
     strategy:
       matrix:
-        os: [ubuntu-26.04] #, windows-2025-vs2026, macos-26-intel]
-        workflow: [debug] #, release]
+        os: [ubuntu-26.04, windows-2025-vs2026, macos-26-intel]
+        workflow: [debug, release]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Clone the repository

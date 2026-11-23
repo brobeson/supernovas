@@ -3,4 +3,4 @@ enableGlobDot: true
 ignorePaths: [.git/, CPM.cmake]
 useGitIgnore: true
 version: 0.2
-words: [brobeson, cppcheck]
+words: [brobeson, cppcheck, profraw]

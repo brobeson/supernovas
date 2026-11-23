@@ -20,6 +20,7 @@ option(
 if(SUPERNOVAS_BUILD_COVERAGE)
   file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/coverage")
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # cspell:ignore fprofile fcoverage
     add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
     add_link_options(-fprofile-instr-generate)
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
