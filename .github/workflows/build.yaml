@@ -87,4 +87,4 @@ jobs:
         if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.workflow == 'debug' }}
         uses: coverallsapp/github-action@v2
         with:
-          file: build/coverage.info
+          file: coverage/coverage.info
