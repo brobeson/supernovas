@@ -27,3 +27,56 @@ Check the [README](https://github.com/brobeson/SupportFileQuality/blob/main/READ
 | :------- | :------------ | :-------- |
 | Linux    | Debug         | Ninja     |
 |          | Release       | Ninja     |
+
+## Test Coverage
+
+### Clang
+
+<!-- markdownlint-disable MD031 -->
+<!-- cspell:ignore ctest profdata profraw -->
+
+1. Configure a build with `SUPERNOVAS_BUILD_COVERAGE` set to `true`.
+   The `debug` CMake configure preset does this.
+   ```bash
+   cmake --preset debug
+   ```
+1. Build the software.
+1. Run the CTest.
+   Set the environment variable `LLVM_PROFILE_FILE` to `coverage-%p-%m.profraw`.
+   The `debug` CMake test preset does this.
+   ```bash
+   ctest --preset debug
+   ```
+1. Index and merge raw profile data.
+   ```bash
+   llvm-profdata merge -sparse build/debug/**/*.profraw -o coverage.profdata
+   ```
+1. Generate a console report.
+   ```bash
+   llvm-cov report \
+     ./build/debug/tests/supernovas/sample_test \
+     -instr-profile=coverage.profdata \
+     -ignore-filename-regex='build/*'
+   ```
+1. Generate an HTML report.
+   ```bash
+   llvm-cov show \
+     build/debug/tests/supernovas/sample_test \
+     -instr-profile=coverage.profdata \
+     -ignore-filename-regex='build/*' \
+     -format=html \
+     -output-dir=build/coverage-html
+   ```
+1. Export LCOV data
+   ```bash
+   llvm-cov export \
+     build/debug/tests/supernovas/sample_test \
+     -instr-profile=coverage.profdata \
+     -ignore-filename-regex='build/.*' \
+     -format=lcov \
+     >coverage.info
+   ```
+
+#### Open Questions
+
+1. Do we need to list every executable in the `llvm-cov report` command?
