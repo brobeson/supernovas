@@ -28,6 +28,18 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "SUPERNOVAS_BUILD_COVERAGE": true
       }
+    },
+    {
+      "name": "visualStudio",
+      "displayName": "Visual Studio",
+      "description": "Configure a Visual Studio project.",
+      "inherits": "default",
+      "generator": "Visual Studio 18 2026",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     }
   ],
   "buildPresets": [
@@ -44,6 +56,20 @@
       "description": "Run a release build.",
       "configuration": "Release",
       "configurePreset": "release"
+    },
+    {
+      "name": "vs-debug",
+      "displayName": "Visual Studio Debug",
+      "description": "Run a debug build.",
+      "configuration": "Debug",
+      "configurePreset": "visualStudio"
+    },
+    {
+      "name": "vs-release",
+      "displayName": "Visual Studio Release",
+      "description": "Run a release build.",
+      "configuration": "Release",
+      "configurePreset": "visualStudio"
     }
   ],
   "testPresets": [
@@ -72,6 +98,22 @@
       "inherits": "default",
       "configuration": "Release",
       "configurePreset": "release"
+    },
+    {
+      "name": "vs-debug",
+      "displayName": "Visual Studio Debug",
+      "description": "Run debug tests",
+      "inherits": "default",
+      "configuration": "Debug",
+      "configurePreset": "visualStudio"
+    },
+    {
+      "name": "vs-release",
+      "displayName": "Visual Studio Release",
+      "description": "Run release tests",
+      "inherits": "default",
+      "configuration": "Release",
+      "configurePreset": "visualStudio"
     }
   ],
   "workflowPresets": [
@@ -93,6 +135,26 @@
         { "type": "configure", "name": "release" },
         { "type": "build", "name": "release" },
         { "type": "test", "name": "release" }
+      ]
+    },
+    {
+      "name": "vs-debug",
+      "displayName": "Visual Studio Debug",
+      "description": "Run a complete debug workflow.",
+      "steps": [
+        { "type": "configure", "name": "visualStudio" },
+        { "type": "build", "name": "vs-debug" },
+        { "type": "test", "name": "vs-debug" }
+      ]
+    },
+    {
+      "name": "vs-release",
+      "displayName": "Visual Studio Release",
+      "description": "Run a complete release workflow.",
+      "steps": [
+        { "type": "configure", "name": "visualStudio" },
+        { "type": "build", "name": "vs-release" },
+        { "type": "test", "name": "vs-release" }
       ]
     }
   ]
