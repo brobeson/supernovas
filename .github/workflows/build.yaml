@@ -15,3 +15,15 @@ jobs:
   projectFiles:
     name: Project Files
     uses: brobeson/SupportFileQuality/.github/workflows/support_files.yaml@v1
+  cppQuality:
+    name: C++ Analysis
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v7
+  cppBuild:
+    name: Build & Test
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v7
