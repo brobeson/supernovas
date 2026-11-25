@@ -64,6 +64,7 @@ SCENARIO("numeric limits exist for julian_day", "[unit]")
 
 SCENARIO("developers can increment and decrement julian_days")
 {
+  // #lizard forgives(nloc)
   GIVEN("a julian_day_number")
   {
     const auto [start_day, expected_incremented, expected_decremented]{
@@ -178,6 +179,8 @@ SCENARIO("developers can add and subtract days")
 
 SCENARIO("developers can compare two julian_days")
 {
+  // #lizard forgives(nloc)
+
   // Let the compiler generate the comparison operators, but keep this test
   // in case changes to the class cause the compiler to generate unexpected
   // comparisons.
@@ -271,6 +274,7 @@ namespace
 
 SCENARIO("developers can convert calendar dates <-> Julian day numbers")
 {
+  // #lizard forgives(nloc)
   GIVEN("a calendar date")
   {
     const auto [gregorian, expected_julian]{

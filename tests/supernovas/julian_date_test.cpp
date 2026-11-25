@@ -19,6 +19,7 @@ SCENARIO("julian_date meets type requirements", "[unit][julian_date]")
 
 SCENARIO("developers can construct julian_dates", "[unit][julian_date]")
 {
+  // #lizard forgives(nloc)
   WHEN("a julian_date is default constructed")
   {
     const novas::julian_date jd;
@@ -102,6 +103,8 @@ SCENARIO("developers can create julian_date literals", "[unit][julian_date]")
 
 SCENARIO("developers can compare two julian_dates", "[unit][julian_date]")
 {
+  // #lizard forgives(nloc)
+
   // Let the compiler generate the comparison operators, but keep this test
   // in case changes to the class cause the compiler to generate unexpected
   // comparisons.
