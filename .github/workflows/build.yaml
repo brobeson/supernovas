@@ -28,6 +28,17 @@ jobs:
         uses: actions/checkout@v7
       - name: Clang-format # cspell:ignore Werror
         run: clang-format -Werror --dry-run --style=file **/*.[ch]pp
+      - name: Lizard # cspell:ignore nloc pipx
+        run: |
+          pipx install lizard
+          lizard \
+            -E cognitive \
+            --Threshold cognitive_complexity=10 \
+            --Threshold nloc=50 \
+            --Threshold cyclomatic_complexity=10 \
+            --Threshold parameter_count=5 \
+            --warnings_only \
+            --modified \
   cppBuild:
     name: Build & Test
     runs-on: ubuntu-26.04
