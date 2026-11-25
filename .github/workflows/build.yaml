@@ -1,3 +1,5 @@
+# cspell:dictionaries bash
+
 name: Build & Test
 on:
   workflow_dispatch:
@@ -18,9 +20,14 @@ jobs:
   cppQuality:
     name: C++ Analysis
     runs-on: ubuntu-26.04
+    defaults:
+      run:
+        shell: bash --noprofile --norc -O globstar -eo pipefail {0}
     steps:
       - name: Clone the repository
         uses: actions/checkout@v7
+      - name: Clang-format # cspell:ignore Werror
+        run: clang-format -Werror --dry-run --style=file **/*.[ch]pp
   cppBuild:
     name: Build & Test
     runs-on: ubuntu-26.04

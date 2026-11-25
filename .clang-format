@@ -1,0 +1,62 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+AccessModifierOffset: -2
+AlignEscapedNewlines: Left
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortLambdasOnASingleLine: Empty
+BinPackArguments: false
+BinPackParameters: OnePerLine
+BreakAfterReturnType: Automatic
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Allman # cspell:ignore Allman
+BreakTemplateDeclarations: Yes
+# cspell:ignore IWYU NEXTLINE cppcheck NOLINT
+CommentPragmas: "^ (IWYU pragma:|NOLINT(BEGIN|END|NEXTLINE)?|cppcheck-suppress|#lizard forgives)"
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+IncludeBlocks: Merge
+IncludeCategories:
+  - Regex: '^<[^\.]*>'
+    Priority: 4
+    SortPriority: 0
+    CaseSensitive: false
+  - Regex: ".*"
+    Priority: 1
+    SortPriority: 0
+    CaseSensitive: false
+IndentExternBlock: Indent
+IndentPPDirectives: BeforeHash
+IndentRequiresClause: false
+InsertBraces: true
+InsertNewlineAtEOF: true
+IntegerLiteralSeparator:
+  Binary: 4
+  BinaryMinDigits: 6
+  Decimal: 3
+  DecimalMinDigits: 5
+  Hex: 4
+  HexMinDigits: 6
+KeepEmptyLines:
+  AtEndOfFile: false
+  AtStartOfBlock: false
+  AtStartOfFile: false
+LineEnding: LF
+NamespaceIndentation: All
+PackConstructorInitializers: NextLine
+PenaltyReturnTypeOnItsOwnLine: 5000
+PointerAlignment: Left
+QualifierAlignment: Left
+RemoveEmptyLinesInUnwrappedLines: true
+RemoveParentheses: ReturnStatement
+RemoveSemicolon: true
+SeparateDefinitionBlocks: Always
+SortIncludes: CaseInsensitive
+SortUsingDeclarations: Lexicographic
+SpacesInLineCommentPrefix:
+  Minimum: 1
+  Maximum: 1
+WrapNamespaceBodyWithEmptyLines: Never
+...
