@@ -5,7 +5,8 @@
 using namespace novas::literals;
 using namespace std::chrono_literals;
 
-SCENARIO("julian_date meets type requirements", "[unit][julian_date]") {
+SCENARIO("julian_date meets type requirements", "[unit][julian_date]")
+{
   CHECK(std::is_constructible_v<novas::julian_date>);
   CHECK(std::is_default_constructible_v<novas::julian_date>);
   CHECK(std::is_trivially_move_assignable_v<novas::julian_date>);
@@ -16,25 +17,32 @@ SCENARIO("julian_date meets type requirements", "[unit][julian_date]") {
   CHECK(std::is_standard_layout_v<novas::julian_date>);
 }
 
-SCENARIO("developers can construct julian_dates", "[unit][julian_date]") {
-  WHEN("a julian_date is default constructed") {
+SCENARIO("developers can construct julian_dates", "[unit][julian_date]")
+{
+  WHEN("a julian_date is default constructed")
+  {
     const novas::julian_date jd;
-    THEN("the julian_date is 0.0") {
+    THEN("the julian_date is 0.0")
+    {
       CHECK(jd.day() == 0_jdn);
       CHECK(jd.time() == 0ns);
     }
   }
-  GIVEN("a julian_day") {
-    const auto day{12345_jdn};
-    WHEN("when the julian_date is constructed") {
+  GIVEN("a julian_day")
+  {
+    const auto day{12'345_jdn};
+    WHEN("when the julian_date is constructed")
+    {
       const novas::julian_date actual{day};
-      THEN("the julian_date is correct") {
+      THEN("the julian_date is correct")
+      {
         CHECK(actual.day() == day);
         CHECK(actual.time() == 0ns);
       }
     }
   }
-  GIVEN("a julian_day and julian_time") {
+  GIVEN("a julian_day and julian_time")
+  {
     // clang-format off
     const auto [actual_day, actual_time, expected_day, expected_time]
     {
@@ -45,24 +53,29 @@ SCENARIO("developers can construct julian_dates", "[unit][julian_date]") {
          {0_jdn, 172800000000000ns,  2_jdn,              0ns }
         }))};
     // clang-format on
-    WHEN("the julian_date is constructed") {
+    WHEN("the julian_date is constructed")
+    {
       const novas::julian_date actual{actual_day, actual_time};
-      THEN("the julian_date is correct") {
+      THEN("the julian_date is correct")
+      {
         CHECK(actual.day() == expected_day);
         CHECK(actual.time() == expected_time);
       }
     }
   }
-  GIVEN("a floating point Julian date") {
+  GIVEN("a floating point Julian date")
+  {
     const auto [date, expected_day, expected_time]{
-        GENERATE(table<double, novas::julian_day_number, novas::julian_time>(
-            {{0.0, 0_jdn, 0ns},
-             {0.5, 0_jdn, 43200000000000ns},
-             {-0.5, -1_jdn, 43200000000000ns},
-             {-0.25, -1_jdn, 64800000000000ns}}))};
-    WHEN("the julian_date is constructed") {
+      GENERATE(table<double, novas::julian_day_number, novas::julian_time>(
+        {{0.0, 0_jdn, 0ns},
+         {0.5, 0_jdn, 43'200'000'000'000ns},
+         {-0.5, -1_jdn, 43'200'000'000'000ns},
+         {-0.25, -1_jdn, 64'800'000'000'000ns}}))};
+    WHEN("the julian_date is constructed")
+    {
       const novas::julian_date actual{date};
-      THEN("the Julian date is correct") {
+      THEN("the Julian date is correct")
+      {
         CHECK(actual.day() == expected_day);
         CHECK(actual.time() == expected_time);
       }
@@ -70,80 +83,125 @@ SCENARIO("developers can construct julian_dates", "[unit][julian_date]") {
   }
 }
 
-SCENARIO("developers can create julian_date literals", "[unit][julian_date]") {
-  GIVEN("a Julian date literal") {
+SCENARIO("developers can create julian_date literals", "[unit][julian_date]")
+{
+  GIVEN("a Julian date literal")
+  {
     using namespace std::chrono_literals;
     using namespace novas::literals;
     const auto [date, expected_day, expected_time]{GENERATE(
-        table<novas::julian_date, novas::julian_day_number, novas::julian_time>(
-            {{0.0_jd, 0_jdn, 0ns}, {0.5_jd, 0_jdn, 43200000000000ns}}))};
-    THEN("the date is correct") {
+      table<novas::julian_date, novas::julian_day_number, novas::julian_time>(
+        {{0.0_jd, 0_jdn, 0ns}, {0.5_jd, 0_jdn, 43'200'000'000'000ns}}))};
+    THEN("the date is correct")
+    {
       CHECK(date.day() == expected_day);
       CHECK(date.time() == expected_time);
     }
   }
 }
 
-SCENARIO("developers can compare two julian_dates", "[unit][julian_date]") {
+SCENARIO("developers can compare two julian_dates", "[unit][julian_date]")
+{
   // Let the compiler generate the comparison operators, but keep this test
   // in case changes to the class cause the compiler to generate unexpected
   // comparisons.
-  GIVEN("two julian dates") {
-    const auto [a, b, expected_equal, expected_unequal, expected_less,
-                expected_less_equal, expected_greater, expected_greater_equal]{
-        GENERATE(table<novas::julian_date, novas::julian_date, bool, bool, bool,
-                       bool, bool, bool>(
-            {{0.0_jd, 0.0_jd, true, false, false, true, false, true},
-             {0.0_jd, 0.3_jd, false, true, true, true, false, false},
-             {0.0_jd, 1.0_jd, false, true, true, true, false, false},
-             {0.0_jd, -1.0_jd, false, true, false, false, true, true}}))};
-    WHEN("the two days are compared for equality") {
+  GIVEN("two julian dates")
+  {
+    const auto [a,
+                b,
+                expected_equal,
+                expected_unequal,
+                expected_less,
+                expected_less_equal,
+                expected_greater,
+                expected_greater_equal]{GENERATE(
+      table<novas::julian_date,
+            novas::julian_date,
+            bool,
+            bool,
+            bool,
+            bool,
+            bool,
+            bool>({{0.0_jd, 0.0_jd, true, false, false, true, false, true},
+                   {0.0_jd, 0.3_jd, false, true, true, true, false, false},
+                   {0.0_jd, 1.0_jd, false, true, true, true, false, false},
+                   {0.0_jd, -1.0_jd, false, true, false, false, true, true}}))};
+    WHEN("the two days are compared for equality")
+    {
       const auto actual{a == b};
-      THEN("the result is correct") { CHECK(actual == expected_equal); }
+      THEN("the result is correct")
+      {
+        CHECK(actual == expected_equal);
+      }
     }
-    WHEN("The two days are compared for inequality") {
+    WHEN("The two days are compared for inequality")
+    {
       const auto actual{a != b};
-      THEN("The result is correct") { CHECK(actual == expected_unequal); }
+      THEN("The result is correct")
+      {
+        CHECK(actual == expected_unequal);
+      }
     }
-    WHEN("The two days are compared for less-than") {
+    WHEN("The two days are compared for less-than")
+    {
       const auto actual{a < b};
-      THEN("The result is correct") { CHECK(actual == expected_less); }
+      THEN("The result is correct")
+      {
+        CHECK(actual == expected_less);
+      }
     }
-    WHEN("The two days are compared for less-than-or-equal") {
+    WHEN("The two days are compared for less-than-or-equal")
+    {
       const auto actual{a <= b};
-      THEN("The result is correct") { CHECK(actual == expected_less_equal); }
+      THEN("The result is correct")
+      {
+        CHECK(actual == expected_less_equal);
+      }
     }
-    WHEN("The two days are compared for greater-than") {
+    WHEN("The two days are compared for greater-than")
+    {
       const auto actual{a > b};
-      THEN("The result is correct") { CHECK(actual == expected_greater); }
+      THEN("The result is correct")
+      {
+        CHECK(actual == expected_greater);
+      }
     }
-    WHEN("The two days are compared for greater-than-or-equal") {
+    WHEN("The two days are compared for greater-than-or-equal")
+    {
       const auto actual{a >= b};
-      THEN("The result is correct") { CHECK(actual == expected_greater_equal); }
+      THEN("The result is correct")
+      {
+        CHECK(actual == expected_greater_equal);
+      }
     }
   }
 }
 
-SCENARIO("developers can negate a julian_date", "[unit][julian_date]") {
-  GIVEN("a julian_date") {
+SCENARIO("developers can negate a julian_date", "[unit][julian_date]")
+{
+  GIVEN("a julian_date")
+  {
     using namespace novas::literals;
     using namespace std::chrono_literals;
     // const auto d{1.0_jd};
     const auto [original, expected_day, expected_time]{
-        GENERATE(table<novas::julian_date, novas::julian_day_number::day_type,
-                       novas::julian_time>({
-            // {0.0_jd, 0, 0ns},
-            {0.5_jd, 0, -43200000000000ns},
-            // {1.0_jd, -1, 0ns},
-            // {1.5_jd, -1, 43200000000000ns},
-            // {novas::julian_date{-0.5}, 0, 43200000000000ns},
-            // {novas::julian_date{-1.0}, -1, 0ns},
-            // {novas::julian_date{-1.5}, 1, 43200000000000ns},
-        }))};
+      GENERATE(table<novas::julian_date,
+                     novas::julian_day_number::day_type,
+                     novas::julian_time>({
+        // {0.0_jd, 0, 0ns},
+        {0.5_jd, 0, -43'200'000'000'000ns},
+        // {1.0_jd, -1, 0ns},
+        // {1.5_jd, -1, 43200000000000ns},
+        // {novas::julian_date{-0.5}, 0, 43200000000000ns},
+        // {novas::julian_date{-1.0}, -1, 0ns},
+        // {novas::julian_date{-1.5}, 1, 43200000000000ns},
+      }))};
     CAPTURE(original);
-    WHEN("the date is negated") {
+    WHEN("the date is negated")
+    {
       const auto actual{-original};
-      THEN("the new date is correct") {
+      THEN("the new date is correct")
+      {
         CHECK(actual.day().day() == expected_day);
         CHECK(actual.time() == expected_time);
       }
