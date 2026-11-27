@@ -2,4 +2,4 @@ enableGlobDot: true
 ignorePaths: [.git/]
 useGitIgnore: true
 version: 0.2
-words: [brobeson]
+words: [brobeson, cppcheck]

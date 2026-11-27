@@ -39,6 +39,19 @@ jobs:
             --Threshold parameter_count=5 \
             --warnings_only \
             --modified \
+      - name: CMake configure
+        env:
+          CXX: clang++
+        run: cmake --preset debug
+      - name: Cppcheck # cspell:ignore exitcode
+        run: |
+          sudo apt-get install cppcheck --yes --no-install-recommends
+          cd build/debug
+          cppcheck \
+            --project=project.cppcheck \
+            --enable=all \
+            --template='::error file={file},line={line},col={column}::[{id}] {message}' \
+            --error-exitcode=1
   cppBuild:
     name: Build & Test
     runs-on: ubuntu-26.04
