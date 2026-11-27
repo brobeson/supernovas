@@ -4,7 +4,6 @@
     {
       "name": "default",
       "hidden": true,
-      "generator": "Ninja",
       "binaryDir": "build/${presetName}",
       "cacheVariables": {
         "CMAKE_CXX_COMPILER": "clang++-20",
@@ -14,22 +13,60 @@
       }
     },
     {
-      "name": "release",
-      "displayName": "Release",
-      "description": "Configure a release build with no sanitizer.",
-      "inherits": "default",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      }
-    },
-    {
       "name": "debug",
       "displayName": "Debug",
-      "description": "Configure a debug build with no sanitizer.",
+      "description": "Configure a debug build.",
       "inherits": "default",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Configure a release build.",
+      "inherits": "default",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Run a release build.",
+      "configuration": "Release",
+      "configurePreset": "release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Run release tests",
+      "inherits": "default",
+      "configuration": "Release",
+      "configurePreset": "release"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Run a complete release workflow.",
+      "steps": [
+        { "type": "configure", "name": "release" },
+        { "type": "build", "name": "release" },
+        { "type": "test", "name": "release" }
+      ]
     }
   ]
 }

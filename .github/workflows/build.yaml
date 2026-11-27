@@ -40,9 +40,9 @@ jobs:
             --warnings_only \
             --modified \
       - name: CMake configure
+        run: cmake --preset debug
         env:
           CXX: clang++
-        run: cmake --preset debug
       - name: Cppcheck # cspell:ignore exitcode
         run: |
           sudo apt-get install cppcheck --yes --no-install-recommends
@@ -60,3 +60,7 @@ jobs:
     steps:
       - name: Clone the repository
         uses: actions/checkout@v7
+      - name: CMake Workflow
+        run: cmake --workflow release
+        env:
+          CMAKE_GENERATOR: Ninja
