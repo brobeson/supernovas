@@ -57,10 +57,13 @@ jobs:
   cppBuild:
     name: Build & Test
     runs-on: ubuntu-26.04
+    strategy:
+      matrix:
+        workflow: [debug, release]
     steps:
       - name: Clone the repository
         uses: actions/checkout@v7
       - name: CMake Workflow
-        run: cmake --workflow release
+        run: cmake --workflow ${{ matrix.workflow }}
         env:
           CMAKE_GENERATOR: Ninja

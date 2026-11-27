@@ -33,6 +33,13 @@
   ],
   "buildPresets": [
     {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Run a debug build.",
+      "configuration": "Debug",
+      "configurePreset": "debug"
+    },
+    {
       "name": "release",
       "displayName": "Release",
       "description": "Run a release build.",
@@ -49,6 +56,14 @@
       }
     },
     {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Run debug tests",
+      "inherits": "default",
+      "configuration": "Debug",
+      "configurePreset": "debug"
+    },
+    {
       "name": "release",
       "displayName": "Release",
       "description": "Run release tests",
@@ -58,6 +73,16 @@
     }
   ],
   "workflowPresets": [
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Run a complete debug workflow.",
+      "steps": [
+        { "type": "configure", "name": "debug" },
+        { "type": "build", "name": "debug" },
+        { "type": "test", "name": "debug" }
+      ]
+    },
     {
       "name": "release",
       "displayName": "Release",
