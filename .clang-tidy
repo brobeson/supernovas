@@ -1,0 +1,19 @@
+# cspell:ignore altera llvmlibc
+---
+Checks: >
+  *,
+  -altera-*,
+  -fuchsia-*,
+  -llvm-header-guard,
+  -llvm-include-order,
+  -llvmlibc-*,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length
+WarningsAsErrors: "*"
+HeaderFilterRegex: ".*"
+FormatStyle: none
+UseColor: true
+CheckOptions:
+  - key: readability-function-cognitive-complexity.Threshold
+    value: 10
+...

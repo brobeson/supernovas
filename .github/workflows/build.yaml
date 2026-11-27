@@ -52,6 +52,8 @@ jobs:
             --enable=all \
             --template='::error file={file},line={line},col={column}::[{id}] {message}' \
             --error-exitcode=1
+      - name: Clang-tidy
+        run: run-clang-tidy -j $(nproc) -p build/debug
   cppBuild:
     name: Build & Test
     runs-on: ubuntu-26.04
