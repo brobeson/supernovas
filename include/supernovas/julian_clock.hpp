@@ -511,6 +511,7 @@ namespace novas
 #endif
 } // namespace novas
 
+/*
 namespace std
 {
   template <>
@@ -527,4 +528,5 @@ namespace std
       std::numeric_limits<novas::julian_day::day_type>::min()};
   }
 } // namespace std
+*/
 #endif
