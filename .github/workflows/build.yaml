@@ -40,7 +40,7 @@ jobs:
             --warnings_only \
             --modified \
       - name: CMake configure
-        run: cmake --preset debug
+        run: cmake --preset debug --toolchain .github/toolchains/clang.cmake
         env:
           CXX: clang++
       - name: Cppcheck # cspell:ignore exitcode
@@ -59,6 +59,7 @@ jobs:
     runs-on: ubuntu-26.04
     strategy:
       matrix:
+        toolchain: [clang, gcc]
         workflow: [debug, release]
     steps:
       - name: Clone the repository
@@ -66,4 +67,4 @@ jobs:
       - name: CMake Workflow
         run: cmake --workflow ${{ matrix.workflow }}
         env:
-          CMAKE_GENERATOR: Ninja
+          CMAKE_TOOLCHAIN_FILE: .github/toolchains/${{ matrix.toolchain }}.cmake

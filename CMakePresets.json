@@ -6,8 +6,6 @@
       "hidden": true,
       "binaryDir": "build/${presetName}",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang++-20",
-        "CMAKE_CXX_MODULE_STD": false,
         "CMAKE_CXX_SCAN_FOR_MODULES": false,
         "CMAKE_EXPORT_COMPILE_COMMANDS": true
       }
